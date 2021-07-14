@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.zerock.myapp.mapper.WeatherMapper" >
+  
+    <insert
+        parameterType="org.zerock.myapp.domain.WeatherDTO"
+        id="date1">
+        
+        INSERT INTO VILLAGE_WEATHER(category, base_date)
+        VALUES(#{category}, #{base_date})
+    </insert>
+    
+    <insert
+        parameterType="org.zerock.myapp.domain.WeatherDTO"
+        id="date2">
+        
+        INSERT INTO VILLAGE_WEATHER(category, base_date)
+        VALUES(#{category}, #{base_date})
+    </insert>
+    
+    <select
+        resultType="Integer"
+        id="cccc">
+        SELECT count(*)
+        FROM village_weather
+        WHERE base_date = #{base_date}
+            AND category = #{category}
+    </select>
+    
+    <select
+        resultType="org.zerock.myapp.domain.WeatherDTO"
+        id="selectWeather">
+        SELECT *
+        FROM village_weather
+        WHERE base_date = #{base_date}
+        AND category = #{category}
+    </select>
+    
+    <!-- <select
+        resultType="org.zerock.myapp.domain.WeatherDTO"
+        id="selectReh">
+        SELECT *
+        FROM village_weather
+        WHERE category = #{category}
+        AND base_date = #{base_date}
+    </select> -->
+    
+    <update
+        id="uT1H">
+        UPDATE village_weather
+        SET ${t} = #{t1h}
+        WHERE base_date = #{base_date}
+        AND category = #{category}
+    </update>
+    
+    <update
+        id="uREH">
+        UPDATE village_weather
+        SET ${t} = #{reh}
+        WHERE base_date = #{base_date}
+        AND category = #{category}
+    </update>
+    
+    
+</mapper>
