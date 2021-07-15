@@ -7,6 +7,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,13 +21,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.WeatherDTO;
+import org.zerock.myapp.domain.WeatherVO;
 import org.zerock.myapp.service.WeatherService;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.log4j.Log4j;
 
 
 @Log4j
-@Configuration
 @EnableScheduling
 @RestController
 @RequestMapping("/api")
@@ -41,10 +45,10 @@ public class WeatherApiController2 {
 	final static String nx = "62";
 	final static String ny = "122";
 	
-//	매시간 22분 넘어야 그 시간의 기상정보 값 조회가능
-//	1시간마다 스케줄러 실행	 1000ms * 60 * 60
-	@Scheduled(fixedRate=1000*60*60)
-	@GetMapping("/weather2")
+//	매일 5시, 23시에 실행되는 스케줄러
+	@Scheduled(cron = "0 0 14,20 * * *")
+//	@Scheduled(fixedRate=15000)
+//	@RequestMapping("/weather2")
 	public void restApiWeather() throws Exception {
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
@@ -52,23 +56,25 @@ public class WeatherApiController2 {
 		
 		Date now = new Date();
 		
-		String time1 = "0800";
+		
 		String date1 = format.format(now);			// base_date
 		String time2 = format2.format(now) + "00";	// base_time
 		String type = "json";
-		String t = "t" + format2.format(now);
-		t= "t08";
+		String pageNo = "1";
+		String numOfRows = "709";
 		
 		WeatherDTO dto = new WeatherDTO();
 		
-		String apiURL = "http://apis.data.go.kr/1360000/VilageFcstInfoService/getUltraSrtNcst";
+		String apiURL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
 		
 		StringBuilder urlBuilder = new StringBuilder(apiURL);
 		urlBuilder.append("?" + URLEncoder.encode("ServiceKey", "UTF-8") + "="+serviceKey);
+		urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + numOfRows);
+		urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + pageNo);
 		urlBuilder.append("&" + URLEncoder.encode("nx", "UTF-8") + "=" + URLEncoder.encode(nx, "UTF-8"));
 		urlBuilder.append("&" + URLEncoder.encode("ny", "UTF-8") + "=" + URLEncoder.encode(ny, "UTF-8"));
 		urlBuilder.append("&" + URLEncoder.encode("base_date", "UTF-8") + "=" + URLEncoder.encode(date1, "UTF-8"));
-		urlBuilder.append("&" + URLEncoder.encode("base_time", "UTF-8") + "=" + URLEncoder.encode(time1, "UTF-8"));
+		urlBuilder.append("&" + URLEncoder.encode("base_time", "UTF-8") + "=" + URLEncoder.encode(time2, "UTF-8"));
 		urlBuilder.append("&" + URLEncoder.encode("dataType", "UTF-8") + "=" + URLEncoder.encode(type, "UTF-8"));
 		
 		URL url = new URL(urlBuilder.toString());
@@ -97,7 +103,7 @@ public class WeatherApiController2 {
 		
 		JSONParser parser = new JSONParser();
 		
-		log.debug(result);
+		log.debug("\n\t>>>>>>>>>>>>>>>>>>" + result);
 				
 		JSONObject obj = (JSONObject)parser.parse(result);
 		JSONObject res = (JSONObject)obj.get("response");
@@ -108,6 +114,7 @@ public class WeatherApiController2 {
 		String category;
 		JSONObject weather;
 		
+		
 		String day = "";
 		String time = "";
 		Object fcstValue;
@@ -116,28 +123,53 @@ public class WeatherApiController2 {
 		
 		int re;
 		
+		String t = null;
+		
 		for(int i=0; i<item.size(); i++) {
 			weather = (JSONObject) item.get(i);
-			fcstValue = weather.get("obsrValue");
-			fcstDate = weather.get("baseDate");
-			fcstTime = weather.get("baseTime");
+			fcstValue = weather.get("fcstValue");
+			fcstDate = weather.get("fcstDate");
+			fcstTime = weather.get("fcstTime");
+			
+			log.info("\n\t >>>>>>>>>> weather : " + weather);
+			
 			
 			category = (String) weather.get("category");
 			
 			switch(category) {
 			case "REH" :
+				
 				dto.setCategory("습도");
-				dto.setReh((weather.get("obsrValue").toString()));
-				dto.setBase_date((weather.get("baseDate").toString()));
-				dto.setBase_time((weather.get("baseTime").toString()));
+				dto.setReh((weather.get("fcstValue").toString()));
+				dto.setFcst_date((weather.get("fcstDate").toString()));
+				dto.setFcst_time((weather.get("fcstTime").toString()));
+				t = "t"+ dto.getFcst_time().substring(0, 2);
 				dto.setT(t);
+				
+				re = this.service.dateCheck1(dto);
+				
+				log.info("\n\t>>>>>>>>>>>>>>>" + dto.getFcst_time());
+				
+				if(re == 0) {
+					this.service.date1(dto);
+				} // if
+				this.service.uReh(dto);
 				break;
-			case "T1H" :
+				
+			case "TMP" :
 				dto.setCategory("온도");
-				dto.setT1h((weather.get("obsrValue").toString()));
-				dto.setBase_date((weather.get("baseDate").toString()));
-				dto.setBase_time((weather.get("baseTime").toString()));
+				dto.setTmp((weather.get("fcstValue").toString()));
+				dto.setFcst_date((weather.get("fcstDate").toString()));
+				dto.setFcst_time((weather.get("fcstTime").toString()));
+				t = "t"+ dto.getFcst_time().substring(0, 2);
 				dto.setT(t);
+				
+				re = this.service.dateCheck1(dto);
+				
+				if(re == 0) {
+					this.service.date1(dto);
+				} // if
+				this.service.uT1h(dto);
 				break;
 			} // switch
 			
@@ -153,33 +185,19 @@ public class WeatherApiController2 {
 			
 			// 카테고리가 습도일 경우
 			if(category.equals("REH")) {
-				System.out.print("\t category : " + dto.getCategory());
+				System.out.print("\n\t category : " + dto.getCategory());
 				System.out.print(", fcst_Value : " + dto.getReh());
-				System.out.print(", fcstDate : " + dto.getBase_date());
-				System.out.println(", fcstTime : " + dto.getBase_time());
-				
-				re = this.service.dateCheck1(dto);
-				
-				if(re == 0) {
-					this.service.date1(dto);
-				} // if
-				
-					this.service.uReh(dto);
+				System.out.print(", fcstDate : " + dto.getFcst_date());
+				System.out.println(", fcstTime : " + dto.getFcst_time());
+				System.out.println();
 			} // if
 			
-			if(category.equals("T1H")) {
-				System.out.print("\t category : " + dto.getCategory());
-				System.out.print(", fcst_Value : " + dto.getT1h());
-				System.out.print(", fcstDate : " + dto.getBase_date());
-				System.out.println(", fcstTime : " + dto.getBase_time());
-				
-				re = this.service.dateCheck1(dto);
-				
-				if(re == 0) {
-					this.service.date2(dto);
-				} // if
-				
-					this.service.uT1h(dto);
+			if(category.equals("TMP")) {
+				System.out.print("\n\t category : " + dto.getCategory());
+				System.out.print(", fcst_Value : " + dto.getTmp());
+				System.out.print(", fcstDate : " + dto.getFcst_date());
+				System.out.println(", fcstTime : " + dto.getFcst_time());
+				System.out.println();
 			} // if
 			
 		} // for

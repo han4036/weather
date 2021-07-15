@@ -1,11 +1,12 @@
 package org.zerock.myapp.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.WeatherDTO;
+import org.zerock.myapp.domain.WeatherVO;
 import org.zerock.myapp.mapper.WeatherMapper;
 
 import lombok.NoArgsConstructor;
@@ -29,17 +30,9 @@ public class WeatherServiceImpl implements WeatherService {
 	} // date1
 	
 	@Override
-	public void date2(WeatherDTO dto) throws Exception {
-		log.debug("date2(dto) invoked.");
-		
-		this.mapper.date2(dto);
-	} // date 2
-	
-	@Override
 	public int dateCheck1(WeatherDTO dto) throws Exception {
 		log.debug("dateCheck1(dto) invoked.");
 		
-		log.debug(">>>>>>");
 		int result = this.mapper.cccc(dto);
 		
 		log.debug(result);
@@ -70,12 +63,11 @@ public class WeatherServiceImpl implements WeatherService {
 	} // uReh1
 	
 	@Override
-	public WeatherDTO selectWeather(String base_date, String category) throws Exception {
+	public List<WeatherVO> selectWeather(WeatherVO vo) throws Exception {
 		log.debug("selectWeather(dto) invoked");
 		
-		WeatherDTO dto = this.mapper.selectWeather(base_date, category);
 		
-		return dto;
+		return this.mapper.selectWeather(vo);
 	} // selectWeather
 	
 	

@@ -1,8 +1,8 @@
 package org.zerock.myapp.domain;
 
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class WeatherVO {
 	
 	private String base_date;

@@ -16,11 +16,11 @@ public class WeatherDTO {
 	@NonNull
 	private String category;
 	@NonNull
-	private String base_date;
+	private String fcst_date;
 	
-	private String base_time;
+	private String fcst_time;
 	@NonNull
-	private String t1h;
+	private String tmp;
 	@NonNull
 	private String reh;
 	private String t;

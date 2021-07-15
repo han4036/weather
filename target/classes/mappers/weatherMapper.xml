@@ -10,34 +10,26 @@
         parameterType="org.zerock.myapp.domain.WeatherDTO"
         id="date1">
         
-        INSERT INTO VILLAGE_WEATHER(category, base_date)
-        VALUES(#{category}, #{base_date})
+        INSERT INTO VILLAGE_WEATHER(category, fcst_date)
+        VALUES(#{category}, #{fcst_date})
     </insert>
     
-    <insert
-        parameterType="org.zerock.myapp.domain.WeatherDTO"
-        id="date2">
-        
-        INSERT INTO VILLAGE_WEATHER(category, base_date)
-        VALUES(#{category}, #{base_date})
-    </insert>
     
     <select
         resultType="Integer"
         id="cccc">
         SELECT count(*)
         FROM village_weather
-        WHERE base_date = #{base_date}
+        WHERE fcst_date = #{fcst_date}
             AND category = #{category}
     </select>
     
     <select
-        resultType="org.zerock.myapp.domain.WeatherDTO"
+        resultType="org.zerock.myapp.domain.WeatherVO"
         id="selectWeather">
         SELECT *
         FROM village_weather
-        WHERE base_date = #{base_date}
-        AND category = #{category}
+        WHERE fcst_date = ${fcst_date}
     </select>
     
     <!-- <select
@@ -52,8 +44,8 @@
     <update
         id="uT1H">
         UPDATE village_weather
-        SET ${t} = #{t1h}
-        WHERE base_date = #{base_date}
+        SET ${t} = #{tmp}
+        WHERE fcst_date = #{fcst_date}
         AND category = #{category}
     </update>
     
@@ -61,7 +53,7 @@
         id="uREH">
         UPDATE village_weather
         SET ${t} = #{reh}
-        WHERE base_date = #{base_date}
+        WHERE fcst_date = #{fcst_date}
         AND category = #{category}
     </update>
     

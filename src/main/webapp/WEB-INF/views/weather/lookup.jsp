@@ -13,6 +13,6 @@
     <div class="submit">
         <input type="submit" value="Sign-In">
     </div>
-    <button type="submit" id="조회"></button>
+    <button type="submit" value="조회"></button>
 </body>
 </html>
