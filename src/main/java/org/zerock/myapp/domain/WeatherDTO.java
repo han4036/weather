@@ -20,9 +20,9 @@ public class WeatherDTO {
 	
 	private String fcst_time;
 	@NonNull
-	private String tmp;
+	private Integer tmp;
 	@NonNull
-	private String reh;
+	private Integer reh;
 	private String t;
 	
 	

@@ -29,7 +29,8 @@
         id="selectWeather">
         SELECT *
         FROM village_weather
-        WHERE fcst_date = ${fcst_date}
+        WHERE fcst_date = #{fcst_date}
+        AND category = #{category}
     </select>
     
     <!-- <select

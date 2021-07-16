@@ -5,31 +5,31 @@ import lombok.Data;
 @Data
 public class WeatherVO {
 	
-	private String base_date;
+	private String fcst_date;
 	private String category;
-	private String T00;
-	private String T01;
-	private String T02;
-	private String T03;
-	private String T04;
-	private String T05;
-	private String T06;
-	private String T07;
-	private String T08;
-	private String T09;
-	private String T10;
-	private String T11;
-	private String T12;
-	private String T13;
-	private String T14;
-	private String T15;
-	private String T16;
-	private String T17;
-	private String T18;
-	private String T19;
-	private String T20;
-	private String T21;
-	private String T22;
-	private String T23;
+	private Integer T00;
+	private Integer T01;
+	private Integer T02;
+	private Integer T03;
+	private Integer T04;
+	private Integer T05;
+	private Integer T06;
+	private Integer T07;
+	private Integer T08;
+	private Integer T09;
+	private Integer T10;
+	private Integer T11;
+	private Integer T12;
+	private Integer T13;
+	private Integer T14;
+	private Integer T15;
+	private Integer T16;
+	private Integer T17;
+	private Integer T18;
+	private Integer T19;
+	private Integer T20;
+	private Integer T21;
+	private Integer T22;
+	private Integer T23;
 
 }

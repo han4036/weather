@@ -46,9 +46,9 @@ public class WeatherApiController2 {
 	final static String ny = "122";
 	
 //	매일 5시, 23시에 실행되는 스케줄러
-	@Scheduled(cron = "0 0 14,20 * * *")
+//	@Scheduled(cron = "0 0 05,11,17,23 * * *")
 //	@Scheduled(fixedRate=15000)
-//	@RequestMapping("/weather2")
+	@RequestMapping("/weather2")
 	public void restApiWeather() throws Exception {
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
@@ -56,7 +56,8 @@ public class WeatherApiController2 {
 		
 		Date now = new Date();
 		
-		
+		String date2 = "20210715";
+		String time1 = "1100";
 		String date1 = format.format(now);			// base_date
 		String time2 = format2.format(now) + "00";	// base_time
 		String type = "json";
@@ -73,8 +74,8 @@ public class WeatherApiController2 {
 		urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + pageNo);
 		urlBuilder.append("&" + URLEncoder.encode("nx", "UTF-8") + "=" + URLEncoder.encode(nx, "UTF-8"));
 		urlBuilder.append("&" + URLEncoder.encode("ny", "UTF-8") + "=" + URLEncoder.encode(ny, "UTF-8"));
-		urlBuilder.append("&" + URLEncoder.encode("base_date", "UTF-8") + "=" + URLEncoder.encode(date1, "UTF-8"));
-		urlBuilder.append("&" + URLEncoder.encode("base_time", "UTF-8") + "=" + URLEncoder.encode(time2, "UTF-8"));
+		urlBuilder.append("&" + URLEncoder.encode("base_date", "UTF-8") + "=" + URLEncoder.encode(date2, "UTF-8"));
+		urlBuilder.append("&" + URLEncoder.encode("base_time", "UTF-8") + "=" + URLEncoder.encode(time1, "UTF-8"));
 		urlBuilder.append("&" + URLEncoder.encode("dataType", "UTF-8") + "=" + URLEncoder.encode(type, "UTF-8"));
 		
 		URL url = new URL(urlBuilder.toString());
@@ -140,7 +141,7 @@ public class WeatherApiController2 {
 			case "REH" :
 				
 				dto.setCategory("습도");
-				dto.setReh((weather.get("fcstValue").toString()));
+				dto.setReh(Integer.parseInt(String.valueOf(weather.get("fcstValue"))));
 				dto.setFcst_date((weather.get("fcstDate").toString()));
 				dto.setFcst_time((weather.get("fcstTime").toString()));
 				t = "t"+ dto.getFcst_time().substring(0, 2);
@@ -158,7 +159,7 @@ public class WeatherApiController2 {
 				
 			case "TMP" :
 				dto.setCategory("온도");
-				dto.setTmp((weather.get("fcstValue").toString()));
+				dto.setTmp(Integer.parseInt(String.valueOf(weather.get("fcstValue"))));
 				dto.setFcst_date((weather.get("fcstDate").toString()));
 				dto.setFcst_time((weather.get("fcstTime").toString()));
 				t = "t"+ dto.getFcst_time().substring(0, 2);
