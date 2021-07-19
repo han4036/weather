@@ -1,0 +1,36 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+
+#area {
+	margin: 0 auto;
+}
+
+#weather {
+	position: absolute;
+	top: 40%;
+	left: 30%;
+}
+
+
+#date1 {
+	width: 250px;
+	height: 30px;
+	
+	text-align: center;
+}
+
+#chart2 {
+	margin-top: 50px;
+}
+
+#submit {
+	width: 80px;
+	height: 50px;
+}
+
+#sub-btn {
+	margin:20px 0 0 25%;
+}

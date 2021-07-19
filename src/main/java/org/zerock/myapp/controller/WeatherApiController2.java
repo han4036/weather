@@ -46,7 +46,7 @@ public class WeatherApiController2 {
 	final static String ny = "122";
 	
 //	매일 5시, 23시에 실행되는 스케줄러
-//	@Scheduled(cron = "0 0 05,11,17,23 * * *")
+	@Scheduled(cron = "0 0 05,11,17,23 * * *")
 //	@Scheduled(fixedRate=15000)
 	@RequestMapping("/weather2")
 	public void restApiWeather() throws Exception {

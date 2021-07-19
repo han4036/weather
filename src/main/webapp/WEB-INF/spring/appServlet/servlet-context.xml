@@ -34,7 +34,7 @@
     
     <mvc:view-controller
             path="/" 
-            view-name="api/weather" 
+            view-name="chart/chart" 
             status-code="200" />
     
     
