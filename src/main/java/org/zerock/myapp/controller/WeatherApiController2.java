@@ -56,8 +56,8 @@ public class WeatherApiController2 {
 		
 		Date now = new Date();
 		
-		String date2 = "20210715";
-		String time1 = "1100";
+		String date2 = "20210718";
+		String time1 = "2300";
 		String date1 = format.format(now);			// base_date
 		String time2 = format2.format(now) + "00";	// base_time
 		String type = "json";

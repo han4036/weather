@@ -19,8 +19,20 @@
         var options = {
           title: '시간별 온도',
           legend: { position: 'bottom' },
-        hAxismaxTextLines: '1'
-        
+          hAxis: {
+              title: 'Time',
+              showTextEvery: 4,
+              textStyle: {
+                  color: '#2B2B2B',
+                  fontSize: 15,
+              },
+              titleTextStyle: {
+                  color: '#2B2B2B',
+                  fontSize: 20,
+                  fontName: 'Arial',
+                  bold: false
+              }
+          }
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
@@ -30,8 +42,7 @@
     </script>
   </head>
   <body>
-    <div id="curve_chart" style="width: 1000px; height: 500px"></div>
+    <div id="curve_chart" style="width: 900px; height: 600px"></div>
     
-    <h2>${ list }</h2>
   </body>
 </html>
