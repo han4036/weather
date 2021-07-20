@@ -71,7 +71,6 @@ public class DataController {
 		for(int i=0; i<d1.length; i++) {
 			re[i] = i;
 			
-			System.out.print(" "+re[i]);
 		} // for
 		
 		StringBuilder row = new StringBuilder();

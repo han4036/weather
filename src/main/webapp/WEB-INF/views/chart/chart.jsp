@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="/resources/css/home.css">
+<link rel="stylesheet" href="../resources/css/home.css">
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />  
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>  
 <script src="http://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
@@ -29,7 +29,7 @@
         changeMonth: false,
         changeYear: false,
         showOn: "both",
-        buttonImage: "/resources/Img/images1.png",
+        buttonImage: "../resources/Img/images1.png",
         buttonImageOnly: true,
         yearSuffix: "년",
         nextText: '다음 달',
@@ -47,6 +47,9 @@
     })
     </script>
     <div id="area">
+      <div id="text">
+        <h2>온도/습도 조회하기</h2>
+      </div>
 	    <div id="weather">
 		    <form action="/chart/chart2" method="get" id="chart2">
 		    <label for="date1">날짜선택</label>
@@ -61,7 +64,7 @@
 		        <button type="submit" id="submit">조회</button>
 		      </div>
 		    </form>
-	    </div>
+        </div>
     </div>
     <!-- 차트 출력 영역 -->
     <!-- <div id="chart_div"></div>

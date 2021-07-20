@@ -6,14 +6,28 @@
 
 #area {
 	margin: 0 auto;
+	
+}   
+
+#text {
+	position: absolute;
+	left: 38%;
+	top: 30%;
+	
 }
 
 #weather {
-	position: absolute;
-	top: 40%;
-	left: 30%;
+    width:410px;
+    position: absolute;
+    top: 40%;
+    left: 32%;
 }
 
+#cate {
+	float: right;
+	width: 60px;
+	height: 25px;
+}
 
 #date1 {
 	width: 250px;
@@ -23,8 +37,16 @@
 }
 
 #chart2 {
-	margin-top: 50px;
+	width: 460px;
+	margin-top: 20px;
+	padding-top: 10px;
 }
+
+#chart2>img {
+	position: absolute;
+	top: 10%;
+}
+
 
 #submit {
 	width: 80px;
@@ -32,5 +54,5 @@
 }
 
 #sub-btn {
-	margin:20px 0 0 25%;
+	margin:40px 0 0 150px;
 }
