@@ -159,7 +159,11 @@
 
 
  
-   
+   var formatter2 = function(cellValue, options, rowObject) {
+	   if(cellValue == null) {
+		   return 0;
+	   }
+   }
     
     
     var cate1 = "${cate}";
@@ -170,6 +174,8 @@
     	console.log(cate1);
     	console.log($("#date1").val());
     	 var gridData = ${gridRow};
+    	 
+    	 
 //     	$.ajax({
 //             type:'GET',
 //             async:false,
@@ -186,7 +192,7 @@
             colNames:['구분', ${colName}],
             colModel:[
                    {name:'구분', index:'구분', align:'center', hidden: false},
-                   {name:${colName}, index:${colName}, align:'center', hidden:false},
+                   {name:${colName}, index:${colName}, align:'center', hidden:false, editable: true /* formatter: formatter2 */},
                    ],
             jsonReader: {
             	root: '${row}',
@@ -200,10 +206,42 @@
         }
 		
 		
+		$("#cate1").change(function(){
+			date1 = $("#date1").val();
+			$.ajax({
+                type: "post",
+//              type: "get",
+                url: "/chart/chart3",
+//              url: "/chart/chart2",
+                loadonce: false,
+                async: true,
+                data : {'date': date1, 'category' : cate1},
+                dateType: "application/json; charset:UTF-8",
+                success: function(result) {
+                	$("#list").jqGrid('clearGridData');
+                    gridData = result.grid;
+                    
+                    data2 = eval("["+result.chart+"]");
+                    
+                    drawChart();
+                    
+                    for(var i=0; i<gridData.length; i++){
+                        
+                        $("#list").jqGrid('addRowData', i+1, gridData[i]);
+                    }
+                },
+                error: function(result){
+                
+                }
+		
+			})
+		});
+		
+		
 	    $("#date1").change(function(){
 	    	date1 = $("#date1").val();
-	    	console.log("date1 : " +date1);
-	    	console.log("date1 : " + ${date});
+// 	    	console.log("date1 : " +date1);
+// 	    	console.log("date1 : " + ${date});
 	    	$.ajax({
 	    		type: "post",
 // 	    		type: "get",
