@@ -1,37 +1,33 @@
 package org.zerock.myapp.controller;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.WeatherDTO;
 import org.zerock.myapp.service.WeatherService;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.extern.log4j.Log4j;
 
 
 @Log4j
-@Configuration
 @EnableScheduling
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 public class WeatherApiController {
 	
 	
@@ -43,139 +39,178 @@ public class WeatherApiController {
 	final static String serviceKey = "WBnK0gPLvl2z8n%2FBujlX6vtsLZzzZGlBJYhNB6MvacORuj8GAQy5jKOh5HbgitXV6mvVB02U0xY9PyR1CYxGuw%3D%3D";
 	final static String nx = "62";
 	final static String ny = "122";
+	static List<JSONObject> reh = new ArrayList<>();
+	static List<JSONObject> tmp = new ArrayList<>();
 	
-//	@Scheduled(fixedDelay=3000)
-	@GetMapping("/weather")
-	public String restApiWeather(WeatherDTO dto) throws Exception {
-		
-		
+	
+	static List<JSONObject> result2 = new ArrayList<>();
+//	static HashMap<>
+//	매일 5시, 23시에 실행되는 스케줄러
+	@Scheduled(cron = "0 0 05,11,17,23 * * *")
+//	@Scheduled(fixedRate=15000)
+	@RequestMapping("/weather2")
+	public void restApiWeather() throws Exception {
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
 		SimpleDateFormat format2 = new SimpleDateFormat("HH");
 		
 		Date now = new Date();
 		
-		String date1 = format.format(now);
-		String time1 = format2.format(now);
-		String time2 = format2.format(now) + "00";
+		String date2 = "20210725";
+		String time2 = "1700";
+		String date1 = format.format(now);			// base_date
+		String time1 = format2.format(now) + "00";	// base_time
+		String type = "json";
+		String pageNo = "1";
+		String numOfRows = "1000";
 		
-		String url = "http://apis.data.go.kr/1360000/VilageFcstInfoService/getUltraSrtNcst"
-					+ "?serviceKey="+ serviceKey
-					+ "&pageNo=1"
-					+ "&numOfRows=10"
-					+ "&dataType=JSON"
-					+ "&base_date=" + date1
-//					+ "&base_time=" + time2
-					+ "&base_time=0900"
-					+ "&nx=" + nx
-					+ "&ny=" + ny;
+		WeatherDTO dto = new WeatherDTO();
 		
-		HashMap<String, Object> resultMap = getDataFromJson(url,"UTF-8","GET","");
+		String apiURL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
 		
-		System.out.println("# RESULT : " + resultMap.toString());
+		StringBuilder urlBuilder = new StringBuilder(apiURL);
+		urlBuilder.append("?" + URLEncoder.encode("ServiceKey", "UTF-8") + "="+serviceKey);
+		urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + numOfRows);
+		urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + pageNo);
+		urlBuilder.append("&" + URLEncoder.encode("nx", "UTF-8") + "=" + URLEncoder.encode(nx, "UTF-8"));
+		urlBuilder.append("&" + URLEncoder.encode("ny", "UTF-8") + "=" + URLEncoder.encode(ny, "UTF-8"));
+		urlBuilder.append("&" + URLEncoder.encode("base_date", "UTF-8") + "=" + URLEncoder.encode(date1, "UTF-8"));
+		urlBuilder.append("&" + URLEncoder.encode("base_time", "UTF-8") + "=" + URLEncoder.encode(time1, "UTF-8"));
+		urlBuilder.append("&" + URLEncoder.encode("dataType", "UTF-8") + "=" + URLEncoder.encode(type, "UTF-8"));
 		
-		System.out.println("\n + \t"+ resultMap.get("response"));
+		URL url = new URL(urlBuilder.toString());
 		
-		JSONObject jsonObj = new JSONObject();
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setRequestProperty("Content-Type", "application/json");
+		System.out.println("Response code : " + conn.getResponseCode());
 		
-		jsonObj.put("result", resultMap);
-		
-		System.out.println(jsonObj);
-		
-		int result = this.service.dateCheck1(dto);
-		
-		if(result == 0) {
-//			this.service.date11(dto);
-//			this.service.weatherUpdate(dto);
+		BufferedReader rd;
+		if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		} else {
-//			this.service.weatherUT00(dto);
+			rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
 		} // if-else
 		
-		return jsonObj.toString();
+		StringBuilder sb = new StringBuilder();
+		String line;
+		while((line = rd.readLine()) != null) {
+			sb.append(line);
+		} // while
 		
+		rd.close();
+		conn.disconnect();
+		String result = sb.toString();
 		
-	} // restApiWeather
-	
-	
-	public HashMap<String, Object> getDataFromJson(String url, String encoding, String type, String jsonStr) throws Exception {
+		JSONParser parser = new JSONParser();
 		
-		boolean isPost = false;
-		
-		if("post".equals(type)) {
-			isPost = true;
-		} else {
-//			url = "".equals(jsonStr) ? url : url + "?request=" + jsonStr;
-			
-			if(!("".equals(jsonStr))) {
-				url = url+"?request="+jsonStr;
-			}
-			
-		} // if-else
-		
-		return getStringFromURL(url, encoding, isPost, jsonStr, "application/json");
-		
-	} // getDataFromJson
-	
-	
-	public HashMap<String, Object> getStringFromURL(String url, String encoding, boolean isPost, String parameter, String contentType)
-		throws Exception {
-		
-		URL apiURL = new URL(url);
-		
-		HttpURLConnection conn = null;
-		BufferedReader br = null;
-		BufferedWriter bw = null;
-		
-		HashMap<String, Object> resultMap = new HashMap<>();
-		
-		try {
-			conn = (HttpURLConnection) apiURL.openConnection();
-			conn.setConnectTimeout(7000);
-			conn.setReadTimeout(7000);
-			conn.setDoOutput(true);
-			
-			if(isPost) {
-				conn.setRequestMethod("POST");
-				conn.setRequestProperty("Content-Type", contentType);
-				conn.setRequestProperty("Accept", "*/*");
-			} else {
-				conn.setRequestMethod("GET");
+		log.debug("\n\t>>>>>>>>>>>>>>>>>>" + result);
 				
-			} // if-else
+		JSONObject obj = (JSONObject)parser.parse(result);
+		JSONObject res = (JSONObject)obj.get("response");
+		JSONObject body = (JSONObject)res.get("body");
+		JSONObject items = (JSONObject)body.get("items");
+		JSONArray item = (JSONArray)items.get("item");
+		
+		
+		
+		String category;
+		JSONObject weather = null;
+		
+		
+		String day = "";
+		String time = "";
+		Object fcstValue;
+		Object fcstDate;
+		Object fcstTime;
+		
+		int re;
+		
+		String t = null;
+		
+		for(int i=0; i<item.size(); i++) {
+			weather = (JSONObject) item.get(i);
+			fcstValue = weather.get("fcstValue");
+			fcstDate = weather.get("fcstDate");
+			fcstTime = weather.get("fcstTime");
 			
-			conn.connect();
+			log.info("\n\t >>>>>>>>>> weather : " + weather);
 			
-			if(isPost) {
-				bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream(), "UTF-8"));
-				bw.write(parameter);
-				bw.flush();
-				bw = null;
+			
+			category = (String) weather.get("category");
+			
+			switch((String) weather.get("category")) {
+			case "REH" :
+				
+				dto.setDataType(2);
+				dto.setReh(Integer.parseInt(String.valueOf(weather.get("fcstValue"))));
+				dto.setInputdatetime((weather.get("fcstDate").toString()));
+				dto.setFcst_time((weather.get("fcstTime").toString()));
+				t = "t"+ dto.getFcst_time().substring(0, 2);
+				dto.setT(t);
+				
+				reh.add(weather);
+				
+				re = this.service.dataCount(dto);
+				
+				log.info("\n\t>>>>>>>>>>>>>>>" + dto.getFcst_time());
+				
+				if(re == 0) {
+					this.service.insertDate(dto);
+				} // if
+				this.service.uREH1(dto);
+				break;
+				
+			case "TMP" :
+				dto.setDataType(1);
+				dto.setTmp(Integer.parseInt(String.valueOf(weather.get("fcstValue"))));
+				dto.setInputdatetime((weather.get("fcstDate").toString()));
+				dto.setFcst_time((weather.get("fcstTime").toString()));
+				t = "t"+ dto.getFcst_time().substring(0, 2);
+				dto.setT(t);
+				
+				tmp.add(weather);
+				
+				re = this.service.dataCount(dto);
+				
+				if(re == 0) {
+					this.service.insertDate(dto);
+				} // if
+				this.service.uTMP1(dto);
+				break;
+			} // switch
+			
+			if(!day.equals(fcstDate.toString())) {
+				day = fcstDate.toString();
 			} // if
 			
-			br = new BufferedReader(new InputStreamReader(conn.getInputStream(), encoding));
+			if(!time.equals(fcstTime.toString())) {
+				time = fcstTime.toString();
+				System.out.println("날짜 : " + day + "\n" + "시간 : "  + time);
+			} // if
 			
-			String line = null;
 			
-			StringBuffer result = new StringBuffer();
+			// 카테고리가 습도일 경우
+			if(category.equals("REH")) {
+				System.out.print("\n\t category : " + dto.getInputdatetime());
+				System.out.print(", fcst_Value : " + dto.getReh());
+				System.out.print(", fcstDate : " + fcstDate);
+//				System.out.println(", fcstTime : " + dto2.getFcst_time());
+				System.out.println();
+			} // if
 			
-			while((line=br.readLine()) != null) result.append(line);
+			if(category.equals("TMP")) {
+				System.out.print("\n\t category : " + dto.getInputdatetime());
+				System.out.print(", fcst_Value : " + dto.getTmp());
+				System.out.print(", fcstDate : " + fcstDate);
+//				System.out.println(", fcstTime : " + dto2.getFcst_time());
+				System.out.println();
+			} // if
 			
-			ObjectMapper mapper = new ObjectMapper();
-			
-			resultMap = mapper.readValue(result.toString(), HashMap.class);
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-			throw new Exception(url + " interface failed" + e.toString());
-		} finally {
-			if(conn != null) conn.disconnect();
-			if(br != null) br.close();
-			if(bw != null) bw.close();
-			
-		} // try-catch-finally
+		} // for
 		
-		return resultMap;
-	} // getStringFromURL
-	
+		System.out.println("\n\t >>>>><<<< sb : " + reh);
+		
+	} // WeatherApiController2
 	
 } // end class

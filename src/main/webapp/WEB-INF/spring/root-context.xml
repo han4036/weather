@@ -22,20 +22,23 @@
 
       <!-- <property name="driverClassName" value="oracle.jdbc.OracleDriver" /> -->
       <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
-
-      <property name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@seoul"/>
+<!--       <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" /> -->
+      <property name="jdbcUrl" value="jdbc:log4jdbc:sqlserver://localhost:1433;DatabaseName=db_weather"/>
+<!--       <property name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@seoul"/> -->
       <!-- <property 
          name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@seoul?TNS_ADMIN=C:/u01/oracle/product/19.3.0/dbhomeXE/network/admin"/> -->
 
-      <property name="username" value="weather_01"/>
+<!--       <property name="username" value="weather_01"/> -->
+      <property name="username" value="server_yang"/>
 
-      <property name="password" value="oracle"/>
+      <property name="password" value="a159753a1!"/>
+<!--       <property name="password" value="oracle"/> -->
 
       <property name="maximumPoolSize" value="10"/>
       <property name="minimumIdle" value="2"/>
       <property name="idleTimeout" value="10000"/>
       <property name="connectionTimeout" value="1000"/>
-      <property name="connectionTestQuery" value="SELECT 1 FROM dual"/>
+      <property name="connectionTestQuery" value="SELECT 1"/>
       <property name="dataSourceJNDI" value="jdbc/HikaruiCP"/>
       <property name="poolName" value="*** HikariDataSource ***"/>
 
@@ -62,7 +65,7 @@
       <!-- 마이바티스의 설정파일의 위치를 속성으로 결정 -->
    <property name="dataSource" ref="hikariDataSource"/>
    <property name="configLocation" value="classpath:mybatis-config.xml"/>
-   <!-- <property name="mapperLocations" value="classpath:mappers/**/*Mapper.xml" /> -->
+<!--    <property name="mapperLocations" value="classpath:mappers/**/*Mapper.xml" /> -->
    
    </bean>
 
@@ -74,7 +77,6 @@
     <!-- ================= 4. MyBatis-Spring ================ -->
 
     <mybatis-spring:scan base-package="org.zerock.myapp.mapper" />
-
 
     <!-- ================= 5. Spring AOP ================
     

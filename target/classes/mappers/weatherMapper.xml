@@ -4,59 +4,45 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
-<mapper namespace="org.zerock.myapp.mapper.WeatherMapper" >
-  
+<mapper namespace="org.zerock.myapp.mapper.WeatherMapper">
     <insert
-        parameterType="org.zerock.myapp.domain.WeatherDTO"
-        id="date1">
-        
-        INSERT INTO VILLAGE_WEATHER(category, fcst_date)
-        VALUES(#{category}, #{fcst_date})
+    parameterType="org.zerock.myapp.domain.WeatherDTO"
+    id="insertDate">
+    INSERT INTO [dbo.WeatherHourlyData](SID, dataType, inputdatetime)
+    VALUES(next value for SEQ_SID, #{dataType}, #{inputdatetime})
     </insert>
-    
     
     <select
         resultType="Integer"
-        id="cccc">
+        id="dataCount">
         SELECT count(*)
-        FROM village_weather
-        WHERE fcst_date = #{fcst_date}
-            AND category = #{category}
+        FROM [dbo.WeatherHourlyData]
+        WHERE inputdatetime = #{inputdatetime}
+            AND dataType = #{dataType}
     </select>
     
     <select
         resultType="org.zerock.myapp.domain.WeatherVO"
-        id="selectWeather">
+        id="weatherList">
         SELECT *
-        FROM village_weather
-        WHERE fcst_date = #{fcst_date}
-        AND category = #{category}
+        FROM [dbo.WeatherHourlyData]
+        WHERE inputdatetime = #{inputdatetime}
+        AND dataType = #{dataType}
     </select>
     
-    <!-- <select
-        resultType="org.zerock.myapp.domain.WeatherDTO"
-        id="selectReh">
-        SELECT *
-        FROM village_weather
-        WHERE category = #{category}
-        AND base_date = #{base_date}
-    </select> -->
-    
     <update
-        id="uT1H">
-        UPDATE village_weather
+        id="uTMP1">
+        UPDATE [dbo.WeatherHourlyData]
         SET ${t} = #{tmp}
-        WHERE fcst_date = #{fcst_date}
-        AND category = #{category}
+        WHERE inputdatetime = #{inputdatetime}
+        AND dataType = #{dataType}
     </update>
     
     <update
-        id="uREH">
-        UPDATE village_weather
+        id="uREH1">
+        UPDATE [dbo.WeatherHourlyData]
         SET ${t} = #{reh}
-        WHERE fcst_date = #{fcst_date}
-        AND category = #{category}
+        WHERE inputdatetime = #{inputdatetime}
+        AND dataType = #{dataType}
     </update>
-    
-    
 </mapper>

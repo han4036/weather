@@ -4,14 +4,14 @@
 }
 
 
-#area {
+#wrapper {
 	margin: 0 auto;
 	
 }   
 
 #text {
 	position: absolute;
-	left: 38%;
+	left: 36%;
 	top: 30%;
 	
 }
@@ -20,7 +20,7 @@
     width:410px;
     position: absolute;
     top: 40%;
-    left: 32%;
+    left: 33%;
 }
 
 #cate {
@@ -54,5 +54,5 @@
 }
 
 #sub-btn {
-	margin:40px 0 0 150px;
+	margin:40px 0 0 160px;
 }

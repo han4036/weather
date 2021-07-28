@@ -2,7 +2,6 @@ package org.zerock.myapp.service;
 
 import java.util.List;
 
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.WeatherDTO;
@@ -21,54 +20,44 @@ public class WeatherServiceImpl implements WeatherService {
 	WeatherMapper mapper;
 
 	@Override
-	public void date1(WeatherDTO dto) throws Exception {
-		log.debug("date1(dto) invoked.");
+	public void insertDate(WeatherDTO dto) throws Exception {
+		log.debug("insertDate(dto) invoked.");
+		this.mapper.insertDate(dto);
+	}
+
+	@Override
+	public int dataCount(WeatherDTO dto) throws Exception {
+		log.debug("dataCount(dto) invoked.");
 		
-		this.mapper.date1(dto);
+		int result = this.mapper.dataCount(dto);
 		
+		return result;
+	}
+
+	@Override
+	public List<WeatherVO> weatherList(WeatherVO vo) throws Exception {
+		log.debug("weatherList(dto) invoked.");
+		
+		return this.mapper.weatherList(vo);
+	}
+	
+
+	@Override
+	public void uTMP1(WeatherDTO dto) throws Exception {
+		log.debug("uTMP1(dto) invoked.");
+		
+		this.mapper.uTMP1(dto);
+		
+	}
+
+	@Override
+	public void uREH1(WeatherDTO dto) throws Exception {
+		log.debug("uREH1(dto) invoked.");
+		
+		this.mapper.uREH1(dto);
 		
 	} // date1
 	
-	@Override
-	public int dateCheck1(WeatherDTO dto) throws Exception {
-		log.debug("dateCheck1(dto) invoked.");
-		
-		int result = this.mapper.cccc(dto);
-		
-		log.debug(result);
-		return result;
-	}
-	
-	@Override
-	public List<WeatherDTO> weatherL(WeatherDTO dto) throws Exception {
-		log.debug("weatherL(dto) invoked.");
-		
-		return this.mapper.lookupT1H(dto);
-	} // weatherL
-
-	@Override
-	public void uT1h(WeatherDTO dto) throws Exception {
-		log.debug("uT1h1(dto) invoked.");
-		
-		this.mapper.uT1H(dto);
-		
-	} // uT1h1
-	
-	@Override
-	public void uReh(WeatherDTO dto) throws Exception {
-		log.debug("uReh1(dto) invoked.");
-		
-		this.mapper.uREH(dto);
-		
-	} // uReh1
-	
-	@Override
-	public List<WeatherVO> selectWeather(WeatherVO vo) throws Exception {
-		log.debug("selectWeather(dto) invoked");
-		
-		
-		return this.mapper.selectWeather(vo);
-	} // selectWeather
 	
 	
 

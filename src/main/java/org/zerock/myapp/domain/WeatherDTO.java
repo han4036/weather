@@ -1,29 +1,15 @@
 package org.zerock.myapp.domain;
 
-import org.springframework.lang.NonNull;
+import lombok.Data;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-
+@Data
 public class WeatherDTO {
-	@NonNull
-	private String category;
-	@NonNull
-	private String fcst_date;
-	
+
+	private Integer dataType;
+	private String inputdatetime;
 	private String fcst_time;
-	@NonNull
 	private Integer tmp;
-	@NonNull
 	private Integer reh;
 	private String t;
-	
 	
 }

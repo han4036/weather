@@ -1,8 +1,12 @@
 package org.zerock.myapp.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -11,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.zerock.myapp.domain.WeatherVO;
 import org.zerock.myapp.service.WeatherService;
 
@@ -33,27 +39,42 @@ public class DataController {
 	public void chart2( Model model, String date, String category) throws Exception {
 		log.debug("chart2() invoked.");
 		
-		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+		StringBuilder df = new StringBuilder();
 		
-		Date day = new Date();
+		System.out.println(date);
 		
-		String dd = sd.format(day);
+		// 입력받은 값 date의 "-"를 빼기위한 substring
+		// ex) 2021-07-21 = 20210721
+		df.append(date.substring(0, 4)).append(date.substring(5, 7)).append(date.substring(8));
+		
+		System.out.println(">>>>>>>>>>> df : " + df);
 		
 		WeatherVO vo = new WeatherVO();
 		
-		if(date == "" || category == "") {
-			
-			vo.setCategory("온도");
-			vo.setFcst_date(dd);
-			
-		} else {
-			vo.setCategory(category);
-			vo.setFcst_date(date);
+		if(category.equals("온도")) {
+			vo.setDataType(1);
+			vo.setInputdatetime(df.toString());
+		} else if(category.equals("습도")) {
+			vo.setDataType(2);
+			vo.setInputdatetime(df.toString());
 		}
 		
-		List<WeatherVO> li = this.service2.selectWeather(vo);
+		List<WeatherVO> li = this.service2.weatherList(vo);
 		
-		vo = li.get(0);
+		
+		HashMap<String, Object> list = new HashMap<>();
+		
+		JSONObject jso = new JSONObject();
+		JSONParser jp = new JSONParser();
+		
+//		
+//		JSONParser jp = new JSONParser();
+//		jso = (JSONObject) jp.parse(li.toString());
+//		
+//		System.out.println(jso);
+		
+		log.debug(li.toString());
+//		vo = li.get(0);
 		
 		int[] re = new int[24];
 		
@@ -73,18 +94,63 @@ public class DataController {
 			
 		} // for
 		
-		StringBuilder row = new StringBuilder();
+		String colName ="";
+		String colData1 ="[{'구분':";
+		String colData2 ="";
 		
-		if(vo.getCategory().equals("온도")) {
+		
+//		 var gridData = [{'구분':"00:00",'온도':"27"}];
+		// ['00:00', 27],
+		
+		StringBuilder gridRow = new StringBuilder();
+		
+//		String jsonString = 
+//        "[{\"custNm\":\"홍길동\","+ "\"custPh\":\"010-0000-0000\","+ "\"birth\":\"2000-01-23\""+ "}]"		;
+//		  [{"custNm":"홍길동","custPh":"010-0000-0000","birth":"2000-01-23"}]
+		StringBuilder chartRow = new StringBuilder();
+		StringBuilder grid = new StringBuilder();
+		
+		if(vo.getDataType().equals(1)) {
 			
-			row.append("['시간', '온도'],");
+			colName = "\"온도\"";
 			
-			JSONArray body = new JSONArray();
+			System.out.println(colName);
+			chartRow.append("['시간', '온도'],");
 			
 			for(WeatherVO vo1 : li) {
 				
-				row.append("['"+d1[0]+"', " + vo1.getT00()+"],")
-				   .append("['"+d1[1]+"', " + vo1.getT01()+"],")
+				list.put("tmp", vo1);
+				
+				vo = vo1;
+				
+				gridRow.append("[{\"구분\":\""+d1[0]+"\", "+colName+":\""+vo1.getT00()+"\"},")
+				  .append("{\"구분\":\""+d1[1]+"\", "+colName+":\""+vo1.getT01()+"\"},")
+				  .append("{\"구분\":\""+d1[2]+"\", "+colName+":\""+vo1.getT02()+"\"},")
+				  .append("{\"구분\":\""+d1[3]+"\", "+colName+":\""+vo1.getT03()+"\"},")
+				  .append("{\"구분\":\""+d1[4]+"\", "+colName+":\""+vo1.getT04()+"\"},")
+				  .append("{\"구분\":\""+d1[5]+"\", "+colName+":\""+vo1.getT05()+"\"},")
+				  .append("{\"구분\":\""+d1[6]+"\", "+colName+":\""+vo1.getT06()+"\"},")
+				  .append("{\"구분\":\""+d1[7]+"\", "+colName+":\""+vo1.getT07()+"\"},")
+				  .append("{\"구분\":\""+d1[8]+"\", "+colName+":\""+vo1.getT08()+"\"},")
+				  .append("{\"구분\":\""+d1[9]+"\", "+colName+":\""+vo1.getT09()+"\"},")
+				  .append("{\"구분\":\""+d1[10]+"\", "+colName+":\""+vo1.getT10()+"\"},")
+				  .append("{\"구분\":\""+d1[11]+"\", "+colName+":\""+vo1.getT11()+"\"},")
+				  .append("{\"구분\":\""+d1[12]+"\", "+colName+":\""+vo1.getT12()+"\"},")
+				  .append("{\"구분\":\""+d1[13]+"\", "+colName+":\""+vo1.getT13()+"\"},")
+				  .append("{\"구분\":\""+d1[14]+"\", "+colName+":\""+vo1.getT14()+"\"},")
+				  .append("{\"구분\":\""+d1[15]+"\", "+colName+":\""+vo1.getT15()+"\"},")
+				  .append("{\"구분\":\""+d1[16]+"\", "+colName+":\""+vo1.getT16()+"\"},")
+				  .append("{\"구분\":\""+d1[17]+"\", "+colName+":\""+vo1.getT17()+"\"},")
+				  .append("{\"구분\":\""+d1[18]+"\", "+colName+":\""+vo1.getT18()+"\"},")
+				  .append("{\"구분\":\""+d1[19]+"\", "+colName+":\""+vo1.getT19()+"\"},")
+				  .append("{\"구분\":\""+d1[20]+"\", "+colName+":\""+vo1.getT20()+"\"},")
+				  .append("{\"구분\":\""+d1[21]+"\", "+colName+":\""+vo1.getT21()+"\"},")
+				  .append("{\"구분\":\""+d1[22]+"\", "+colName+":\""+vo1.getT22()+"\"},")
+				  .append("{\"구분\":\""+d1[23]+"\", "+colName+":\""+vo1.getT23()+"\"}]");
+				
+				
+				chartRow.append("['"+d1[0]+"', " + vo1.getT00()+"],")
+				   .append("['"+d1[1]+"', " + vo1.getT01()+"],") 
 				   .append("['"+d1[2]+"', " + vo1.getT02()+"],")
 				   .append("['"+d1[3]+"', " + vo1.getT03()+"],")
 				   .append("['"+d1[4]+"', " + vo1.getT04()+"],")
@@ -108,17 +174,46 @@ public class DataController {
 				   .append("['"+d1[22]+"', " + vo1.getT22()+"],")
 				   .append("['"+d1[23]+"', " + vo1.getT23()+"]");
 				   
-				System.out.println(row);
+				System.out.println(chartRow);
 			}
 		
 		} else {
-			row.append("['시간', '습도'],");
 			
-			JSONArray body = new JSONArray();
+			chartRow.append("['시간', '습도'],");
 			
 			for(WeatherVO vo1 : li) {
 				
-				row.append("['"+d1[0]+"', " + vo1.getT00()+"],")
+				colName = "\"습도\"";
+				
+				vo = vo1;
+				
+				gridRow.append("[{\"구분\":\""+d1[0]+"\", "+colName+":\""+vo1.getT00()+"\"},")
+				  .append("{\"구분\":\""+d1[1]+"\", "+colName+":\""+vo1.getT01()+"\"},")
+				  .append("{\"구분\":\""+d1[2]+"\", "+colName+":\""+vo1.getT02()+"\"},")
+				  .append("{\"구분\":\""+d1[3]+"\", "+colName+":\""+vo1.getT03()+"\"},")
+				  .append("{\"구분\":\""+d1[4]+"\", "+colName+":\""+vo1.getT04()+"\"},")
+				  .append("{\"구분\":\""+d1[5]+"\", "+colName+":\""+vo1.getT05()+"\"},")
+				  .append("{\"구분\":\""+d1[6]+"\", "+colName+":\""+vo1.getT06()+"\"},")
+				  .append("{\"구분\":\""+d1[7]+"\", "+colName+":\""+vo1.getT07()+"\"},")
+				  .append("{\"구분\":\""+d1[8]+"\", "+colName+":\""+vo1.getT08()+"\"},")
+				  .append("{\"구분\":\""+d1[9]+"\", "+colName+":\""+vo1.getT09()+"\"},")
+				  .append("{\"구분\":\""+d1[10]+"\", "+colName+":\""+vo1.getT10()+"\"},")
+				  .append("{\"구분\":\""+d1[11]+"\", "+colName+":\""+vo1.getT11()+"\"},")
+				  .append("{\"구분\":\""+d1[12]+"\", "+colName+":\""+vo1.getT12()+"\"},")
+				  .append("{\"구분\":\""+d1[13]+"\", "+colName+":\""+vo1.getT13()+"\"},")
+				  .append("{\"구분\":\""+d1[14]+"\", "+colName+":\""+vo1.getT14()+"\"},")
+				  .append("{\"구분\":\""+d1[15]+"\", "+colName+":\""+vo1.getT15()+"\"},")
+				  .append("{\"구분\":\""+d1[16]+"\", "+colName+":\""+vo1.getT16()+"\"},")
+				  .append("{\"구분\":\""+d1[17]+"\", "+colName+":\""+vo1.getT17()+"\"},")
+				  .append("{\"구분\":\""+d1[18]+"\", "+colName+":\""+vo1.getT18()+"\"},")
+				  .append("{\"구분\":\""+d1[19]+"\", "+colName+":\""+vo1.getT19()+"\"},")
+				  .append("{\"구분\":\""+d1[20]+"\", "+colName+":\""+vo1.getT20()+"\"},")
+				  .append("{\"구분\":\""+d1[21]+"\", "+colName+":\""+vo1.getT21()+"\"},")
+				  .append("{\"구분\":\""+d1[22]+"\", "+colName+":\""+vo1.getT22()+"\"},")
+				  .append("{\"구분\":\""+d1[23]+"\", "+colName+":\""+vo1.getT23()+"\"}]");
+				
+			
+				chartRow.append("['"+d1[0]+"', " + vo1.getT00()+"],")
 				   .append("['"+d1[1]+"', " + vo1.getT01()+"],")
 				   .append("['"+d1[2]+"', " + vo1.getT02()+"],")
 				   .append("['"+d1[3]+"', " + vo1.getT03()+"],")
@@ -146,9 +241,16 @@ public class DataController {
 		
 		}
 		
-		model.addAttribute("row",row);
+		JSONArray ja = (JSONArray)jp.parse(gridRow.toString());
+		
+		System.out.println("\n\t >>>>>>>>>>>>>>> vo : " + ja);
+		
+		model.addAttribute("vo", vo);
+		model.addAttribute("gridRow", ja);
+		model.addAttribute("chartRow",chartRow);
 		model.addAttribute("date", date);
 		model.addAttribute("cate", category);
+		model.addAttribute("colName", colName);
 		
 	} // chart2
 	
@@ -159,5 +261,277 @@ public class DataController {
 		
 		
 	} // chart
+	
+	@GetMapping("/chart4")
+	@ResponseBody
+	public String chart4(String category, Model model) throws Exception {
+		log.debug("chart4() invoked.");
+		
+		String hi = "";
+		
+		if(category.equals("온도")) {
+			hi = "Hi!!!!!";
+		} else {
+			hi = "fail...!";
+		}
+		
+		return hi;
+		
+	} // chart
+	
+	@PostMapping("/chart3")
+	@ResponseBody
+	public HashMap<String, Object> chart3( Model model, 
+			String date, String category, 
+			HttpServletResponse response, HttpServletRequest req) throws Exception {
+		log.debug("chart3() invoked.");
+		
+		StringBuilder df = new StringBuilder();
+		
+		response.setCharacterEncoding("UTF-8");
+		
+		System.out.println(date);
+		
+//		date="2021-07-26";
+//		CATEGORY="온도";
+		
+		// 입력받은 값 date의 "-"를 빼기위한 substring
+		// ex) 2021-07-21 = 20210721
+		df.append(date.substring(0, 4)).append(date.substring(5, 7)).append(date.substring(8));
+//		df.append(date);
+		
+		System.out.println(">>>>>>>>>>> df : " + df);
+		
+		WeatherVO vo = new WeatherVO();
+		
+		if(category.equals("온도")) {
+			vo.setDataType(1);
+			vo.setInputdatetime(df.toString());
+		} else if(category.equals("습도")) {
+			vo.setDataType(2);
+			vo.setInputdatetime(df.toString());
+		}
+		
+		List<WeatherVO> li = this.service2.weatherList(vo);
+		
+		
+		HashMap<String, Object> list = new HashMap<>();
+		
+		JSONObject jso = new JSONObject();
+		JSONParser jp = new JSONParser();
+		
+//		
+//		JSONParser jp = new JSONParser();
+//		jso = (JSONObject) jp.parse(li.toString());
+//		
+//		System.out.println(jso);
+		
+		log.debug(li.toString());
+//		vo = li.get(0);
+		
+		int[] re = new int[24];
+		
+		String[] d1 = new String[24];
+		
+		for(int i=0; i<d1.length; ++i) {
+			if(i<10) {
+				d1[i] = "0"+String.valueOf(i)+":00";
+			} else if(i>= 10) {
+				d1[i] = String.valueOf(i)+":00";
+			} // if
+		} // for
+		
+		
+		for(int i=0; i<d1.length; i++) {
+			re[i] = i;
+			
+		} // for
+		
+		String colName ="";
+		
+		
+//		 var gridData = [{'구분':"00:00",'온도':"27"}];
+		// ['00:00', 27],
+		
+		StringBuilder gridRow = new StringBuilder();
+		
+//		String jsonString = 
+//        "[{\"custNm\":\"홍길동\","+ "\"custPh\":\"010-0000-0000\","+ "\"birth\":\"2000-01-23\""+ "}]"		;
+//		  [{"custNm":"홍길동","custPh":"010-0000-0000","birth":"2000-01-23"}]
+		StringBuilder chartRow = new StringBuilder();
+		StringBuilder grid = new StringBuilder();
+		
+		if(vo.getDataType().equals(1)) {
+			
+			colName = "\"온도\"";
+			
+			System.out.println(colName);
+			chartRow.append("['시간', '온도'],");
+			
+			for(WeatherVO vo1 : li) {
+				
+				list.put("tmp", vo1);
+				
+				vo = vo1;
+				
+				gridRow.append("[{\"구분\":\""+d1[0]+"\", "+colName+":\""+vo1.getT00()+"\"},")
+				  .append("{\"구분\":\""+d1[1]+"\", "+colName+":\""+vo1.getT01()+"\"},")
+				  .append("{\"구분\":\""+d1[2]+"\", "+colName+":\""+vo1.getT02()+"\"},")
+				  .append("{\"구분\":\""+d1[3]+"\", "+colName+":\""+vo1.getT03()+"\"},")
+				  .append("{\"구분\":\""+d1[4]+"\", "+colName+":\""+vo1.getT04()+"\"},")
+				  .append("{\"구분\":\""+d1[5]+"\", "+colName+":\""+vo1.getT05()+"\"},")
+				  .append("{\"구분\":\""+d1[6]+"\", "+colName+":\""+vo1.getT06()+"\"},")
+				  .append("{\"구분\":\""+d1[7]+"\", "+colName+":\""+vo1.getT07()+"\"},")
+				  .append("{\"구분\":\""+d1[8]+"\", "+colName+":\""+vo1.getT08()+"\"},")
+				  .append("{\"구분\":\""+d1[9]+"\", "+colName+":\""+vo1.getT09()+"\"},")
+				  .append("{\"구분\":\""+d1[10]+"\", "+colName+":\""+vo1.getT10()+"\"},")
+				  .append("{\"구분\":\""+d1[11]+"\", "+colName+":\""+vo1.getT11()+"\"},")
+				  .append("{\"구분\":\""+d1[12]+"\", "+colName+":\""+vo1.getT12()+"\"},")
+				  .append("{\"구분\":\""+d1[13]+"\", "+colName+":\""+vo1.getT13()+"\"},")
+				  .append("{\"구분\":\""+d1[14]+"\", "+colName+":\""+vo1.getT14()+"\"},")
+				  .append("{\"구분\":\""+d1[15]+"\", "+colName+":\""+vo1.getT15()+"\"},")
+				  .append("{\"구분\":\""+d1[16]+"\", "+colName+":\""+vo1.getT16()+"\"},")
+				  .append("{\"구분\":\""+d1[17]+"\", "+colName+":\""+vo1.getT17()+"\"},")
+				  .append("{\"구분\":\""+d1[18]+"\", "+colName+":\""+vo1.getT18()+"\"},")
+				  .append("{\"구분\":\""+d1[19]+"\", "+colName+":\""+vo1.getT19()+"\"},")
+				  .append("{\"구분\":\""+d1[20]+"\", "+colName+":\""+vo1.getT20()+"\"},")
+				  .append("{\"구분\":\""+d1[21]+"\", "+colName+":\""+vo1.getT21()+"\"},")
+				  .append("{\"구분\":\""+d1[22]+"\", "+colName+":\""+vo1.getT22()+"\"},")
+				  .append("{\"구분\":\""+d1[23]+"\", "+colName+":\""+vo1.getT23()+"\"}]");
+				
+				
+				chartRow.append("['"+d1[0]+"', " + vo1.getT00()+"],")
+				   .append("['"+d1[1]+"', " + vo1.getT01()+"],") 
+				   .append("['"+d1[2]+"', " + vo1.getT02()+"],")
+				   .append("['"+d1[3]+"', " + vo1.getT03()+"],")
+				   .append("['"+d1[4]+"', " + vo1.getT04()+"],")
+				   .append("['"+d1[5]+"', " + vo1.getT05()+"],")
+				   .append("['"+d1[6]+"', " + vo1.getT06()+"],")
+				   .append("['"+d1[7]+"', " + vo1.getT07()+"],")
+				   .append("['"+d1[8]+"', " + vo1.getT08()+"],")
+				   .append("['"+d1[9]+"', " + vo1.getT09()+"],")
+				   .append("['"+d1[10]+"', " + vo1.getT10()+"],")
+				   .append("['"+d1[11]+"', " + vo1.getT11()+"],")
+				   .append("['"+d1[12]+"', " + vo1.getT12()+"],")
+				   .append("['"+d1[13]+"', " + vo1.getT13()+"],")
+				   .append("['"+d1[14]+"', " + vo1.getT14()+"],")
+				   .append("['"+d1[15]+"', " + vo1.getT15()+"],")
+				   .append("['"+d1[16]+"', " + vo1.getT16()+"],")
+				   .append("['"+d1[17]+"', " + vo1.getT17()+"],")
+				   .append("['"+d1[18]+"', " + vo1.getT18()+"],")
+				   .append("['"+d1[19]+"', " + vo1.getT19()+"],")
+				   .append("['"+d1[20]+"', " + vo1.getT20()+"],")
+				   .append("['"+d1[21]+"', " + vo1.getT21()+"],")
+				   .append("['"+d1[22]+"', " + vo1.getT22()+"],")
+				   .append("['"+d1[23]+"', " + vo1.getT23()+"]");
+				   
+				System.out.println(chartRow);
+			}
+		
+		} else {
+			
+			chartRow.append("['시간', '습도'],");
+			
+			for(WeatherVO vo1 : li) {
+				
+				colName = "\"습도\"";
+				
+				vo = vo1;
+				
+				gridRow.append("[{\"구분\":\""+d1[0]+"\", "+colName+":\""+vo1.getT00()+"\"},")
+				  .append("{\"구분\":\""+d1[1]+"\", "+colName+":\""+vo1.getT01()+"\"},")
+				  .append("{\"구분\":\""+d1[2]+"\", "+colName+":\""+vo1.getT02()+"\"},")
+				  .append("{\"구분\":\""+d1[3]+"\", "+colName+":\""+vo1.getT03()+"\"},")
+				  .append("{\"구분\":\""+d1[4]+"\", "+colName+":\""+vo1.getT04()+"\"},")
+				  .append("{\"구분\":\""+d1[5]+"\", "+colName+":\""+vo1.getT05()+"\"},")
+				  .append("{\"구분\":\""+d1[6]+"\", "+colName+":\""+vo1.getT06()+"\"},")
+				  .append("{\"구분\":\""+d1[7]+"\", "+colName+":\""+vo1.getT07()+"\"},")
+				  .append("{\"구분\":\""+d1[8]+"\", "+colName+":\""+vo1.getT08()+"\"},")
+				  .append("{\"구분\":\""+d1[9]+"\", "+colName+":\""+vo1.getT09()+"\"},")
+				  .append("{\"구분\":\""+d1[10]+"\", "+colName+":\""+vo1.getT10()+"\"},")
+				  .append("{\"구분\":\""+d1[11]+"\", "+colName+":\""+vo1.getT11()+"\"},")
+				  .append("{\"구분\":\""+d1[12]+"\", "+colName+":\""+vo1.getT12()+"\"},")
+				  .append("{\"구분\":\""+d1[13]+"\", "+colName+":\""+vo1.getT13()+"\"},")
+				  .append("{\"구분\":\""+d1[14]+"\", "+colName+":\""+vo1.getT14()+"\"},")
+				  .append("{\"구분\":\""+d1[15]+"\", "+colName+":\""+vo1.getT15()+"\"},")
+				  .append("{\"구분\":\""+d1[16]+"\", "+colName+":\""+vo1.getT16()+"\"},")
+				  .append("{\"구분\":\""+d1[17]+"\", "+colName+":\""+vo1.getT17()+"\"},")
+				  .append("{\"구분\":\""+d1[18]+"\", "+colName+":\""+vo1.getT18()+"\"},")
+				  .append("{\"구분\":\""+d1[19]+"\", "+colName+":\""+vo1.getT19()+"\"},")
+				  .append("{\"구분\":\""+d1[20]+"\", "+colName+":\""+vo1.getT20()+"\"},")
+				  .append("{\"구분\":\""+d1[21]+"\", "+colName+":\""+vo1.getT21()+"\"},")
+				  .append("{\"구분\":\""+d1[22]+"\", "+colName+":\""+vo1.getT22()+"\"},")
+				  .append("{\"구분\":\""+d1[23]+"\", "+colName+":\""+vo1.getT23()+"\"}]");
+				
+			
+				chartRow.append("['"+d1[0]+"', " + vo1.getT00()+"],")
+				   .append("['"+d1[1]+"', " + vo1.getT01()+"],")
+				   .append("['"+d1[2]+"', " + vo1.getT02()+"],")
+				   .append("['"+d1[3]+"', " + vo1.getT03()+"],")
+				   .append("['"+d1[4]+"', " + vo1.getT04()+"],")
+				   .append("['"+d1[5]+"', " + vo1.getT05()+"],")
+				   .append("['"+d1[6]+"', " + vo1.getT06()+"],")
+				   .append("['"+d1[7]+"', " + vo1.getT07()+"],")
+				   .append("['"+d1[8]+"', " + vo1.getT08()+"],")
+				   .append("['"+d1[9]+"', " + vo1.getT09()+"],")
+				   .append("['"+d1[10]+"', " + vo1.getT10()+"],")
+				   .append("['"+d1[11]+"', " + vo1.getT11()+"],")
+				   .append("['"+d1[12]+"', " + vo1.getT12()+"],")
+				   .append("['"+d1[13]+"', " + vo1.getT13()+"],")
+				   .append("['"+d1[14]+"', " + vo1.getT14()+"],")
+				   .append("['"+d1[15]+"', " + vo1.getT15()+"],")
+				   .append("['"+d1[16]+"', " + vo1.getT16()+"],")
+				   .append("['"+d1[17]+"', " + vo1.getT17()+"],")
+				   .append("['"+d1[18]+"', " + vo1.getT18()+"],")
+				   .append("['"+d1[19]+"', " + vo1.getT19()+"],")
+				   .append("['"+d1[20]+"', " + vo1.getT20()+"],")
+				   .append("['"+d1[21]+"', " + vo1.getT21()+"],")
+				   .append("['"+d1[22]+"', " + vo1.getT22()+"],")
+				   .append("['"+d1[23]+"', " + vo1.getT23()+"]");
+			}
+		
+		}
+		
+		JSONArray jg = (JSONArray)jp.parse(gridRow.toString());
+		
+//		JSONArray jc = (JSONArray)jp.parse(chartRow.toString());
+		String jc = chartRow.toString();
+		
+		System.out.println(chartRow.toString());
+		
+		System.out.println("\n\t >>>>>>>>>>>>>>> jg : " + jg);
+		
+		model.addAttribute("vo", vo);
+		model.addAttribute("gridRow", jg);
+		model.addAttribute("chartRow",chartRow);
+		model.addAttribute("date", date);
+		model.addAttribute("cate", category);
+		model.addAttribute("colName", colName);
+		
+		String de = URLEncoder.encode(jg.toString(), "UTF-8");
+		
+		HashMap<String, Object> mapResult = new HashMap<String, Object>();
+		
+		List<JSONObject> jgData = new ArrayList<>();
+		
+		for(int i=0; i<jg.size(); i++) {
+			jgData.add(i, (JSONObject) jg.get(i));
+		}
+		
+		System.out.println(">>>>>>>>: jdData" + jgData);
+		
+//		for(int i=0; i<jc.size(); i++) {
+//			jcData.add(i, (JSONObject) jc.get(i));
+//		}
+		
+		mapResult.put("grid", jgData);
+		mapResult.put("chart", jc);
+		
+		
+		log.debug(">>>>>>>>>>>>"+ mapResult.toString());
+		
+		return mapResult;
+		
+	} // chart2
 	
 }

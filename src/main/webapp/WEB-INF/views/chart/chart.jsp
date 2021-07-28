@@ -9,6 +9,7 @@
 <head>
 <link rel="stylesheet" href="../resources/css/home.css">
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />  
+<link rel="stylesheet" type="text/css" href="/resources/src/css/jquery-ui.css">"
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>  
 <script src="http://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
 <meta charset="UTF-8">
@@ -36,7 +37,7 @@
         prevText: '이전 달',
         dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
         dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
-        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7', '8월', '9월', '10월', '11월', '12월'],
         monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
         minDate: "-1Y",
         maxDate: "+1Y",
@@ -46,9 +47,9 @@
       
     })
     </script>
-    <div id="area">
+    <div id="wrapper">
       <div id="text">
-        <h2>온도/습도 조회하기</h2>
+        <h2>날씨 예보(온도/습도) 조회하기</h2>
       </div>
 	    <div id="weather">
 		    <form action="/chart/chart2" method="get" id="chart2">
@@ -66,11 +67,6 @@
 		    </form>
         </div>
     </div>
-    <!-- 차트 출력 영역 -->
-    <!-- <div id="chart_div"></div>
-    차트가 그려지는 영역
-    차트 새로고침 버튼
-    <button id="btn" type="button" onclick="drawChart()">refresh</button> -->
 </body>
 </html>
 

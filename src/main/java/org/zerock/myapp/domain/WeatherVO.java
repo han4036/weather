@@ -2,11 +2,12 @@ package org.zerock.myapp.domain;
 
 import lombok.Data;
 
+//@Value
 @Data
 public class WeatherVO {
-	
-	private String fcst_date;
-	private String category;
+	private Integer sid;
+	private String inputdatetime;
+	private Integer dataType;
 	private Integer T00;
 	private Integer T01;
 	private Integer T02;
@@ -31,5 +32,6 @@ public class WeatherVO {
 	private Integer T21;
 	private Integer T22;
 	private Integer T23;
-
+//	private Integer 
+	
 }
