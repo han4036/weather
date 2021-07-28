@@ -75,14 +75,15 @@
 //           })
 //       }
 
-//       var data = google.visualization.arrayToDataTable([
-//             ${chartRow}
-//         ]);
+        var data2 = [${chartRow}];
+
+        console.log(typeof ${chartRow});
         
       function drawChart() {
-    	  var data = google.visualization.arrayToDataTable([
-              ${chartRow}
-          ]);
+    	  
+    	  var chart_data = google.visualization.arrayToDataTable(
+              data2
+          ); 
         
         var options = {
               title: '시간별 ${cate}',
@@ -107,8 +108,10 @@
         
         var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
-        chart.draw(data, options);
+        chart.draw(chart_data, options);
       };
+      
+      
       
 //       function drawInit() {
     	  
@@ -218,7 +221,23 @@
 // 	    	    	chartData = google.visualization.arrayToDataTable([
 // 	    	            result.chart
 // 	    	            ]);
-	    	    	
+//                     console.log(typeof result.chart);
+//                     var eval = (new Function("return"))
+                    console.log(typeof ('['+result.chart+']'));
+//                     data2 = '['+result.chart+']';
+                    data2 = eval("["+result.chart+"]");
+//                     console.log((new Function(("["+result.chart+"]"))));
+//                     Object(data2);
+//                     data2 = (new Function(('return'+"["+result.chart+"]")))
+                    
+                    drawChart();
+                    
+                    
+//                     var data2ToArray = data2.split('],[');
+//                     console.log(">>>>>> Array : " + data2ToArray);
+//                     console.log(">>>>>"+data2);
+                    
+// 	    	    	drawChart();
 	    	    	
 	    	    	
 // 	    	    	google.setOnLoadCallback(drawInit);
@@ -243,7 +262,7 @@
 // 	    	    	$("#list").trigger("reloadGrid");
 	    	    },
 	    	    error : function(e){
-	    	    	alert('실패!' + e);
+	    	    	alert('해당 날짜의 데이터가 없습니다.\n 다른 날짜를 선택해주세요.');
 	    	    }
 	    	})
 	        
