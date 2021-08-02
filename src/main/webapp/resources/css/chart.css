@@ -62,6 +62,15 @@
     height: 30px;
 }
 
+#weather_table_nav {
+	float: right;
+	
+}
+
+#export_Excel {
+	height: 40px;
+}
+
 /* #list { */
 /* 	float: left; */
 /* } */
