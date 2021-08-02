@@ -17,5 +17,7 @@ public interface WeatherMapper {
 	
 	public abstract void uTMP1(WeatherDTO dto) throws Exception;
 	
+	public abstract void uWeatherValue(WeatherDTO dto) throws Exception;
+	
 	public abstract void uREH1(WeatherDTO dto) throws Exception;
 }

@@ -32,6 +32,7 @@ public class WeatherVO {
 	private Integer T21;
 	private Integer T22;
 	private Integer T23;
+	private String t;
 //	private Integer 
 	
 }

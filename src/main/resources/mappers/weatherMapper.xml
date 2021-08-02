@@ -21,10 +21,23 @@
             AND dataType = #{dataType}
     </select>
     
+<!--     <select -->
+<!--         resultType="org.zerock.myapp.domain.WeatherVO" -->
+<!--         id="weatherList"> -->
+<!--         SELECT * -->
+<!--         FROM [dbo.WeatherHourlyData] -->
+<!--         WHERE inputdatetime = #{inputdatetime} -->
+<!--         AND dataType = #{dataType} -->
+<!--     </select> -->
+    
     <select
         resultType="org.zerock.myapp.domain.WeatherVO"
         id="weatherList">
-        SELECT *
+        SELECT sid, dataType, isnull(t00, 0) as T00, isnull(t01, 0) as T01, isnull(t02, 0) as T02, isnull(t03, 0) as T03,
+        isnull(t04, 0) as T04, isnull(t05, 0) as T05, isnull(t06, 0) as T06, isnull(t07, 0) as T07, isnull(t08, 0) as T08,
+        isnull(t09, 0) as T09, isnull(t10, 0) as T10, isnull(t11, 0) as T11, isnull(t12, 0) as T12, isnull(t13, 0) as T13,
+        isnull(t14, 0) as T14, isnull(t15, 0) as T15, isnull(t16, 0) as T16, isnull(t17, 0) as T17, isnull(t18, 0) as T18,
+        isnull(t19, 0) as T19, isnull(t20, 0) as T20, isnull(t21, 0) as T21, isnull(t22, 0) as T22, isnull(t23, 0) as T23
         FROM [dbo.WeatherHourlyData]
         WHERE inputdatetime = #{inputdatetime}
         AND dataType = #{dataType}
@@ -36,6 +49,14 @@
         SET ${t} = #{tmp}
         WHERE inputdatetime = #{inputdatetime}
         AND dataType = #{dataType}
+    </update>
+    
+    <update
+        id="uWeatherValue">
+        UPDATE [dbo.WeatherHourlyData]
+        SET ${t} = #{value}
+        WHERE dataType = #{dataType}
+        AND inputdatetime = #{inputdatetime}
     </update>
     
     <update

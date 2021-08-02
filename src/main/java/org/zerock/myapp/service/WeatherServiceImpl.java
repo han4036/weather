@@ -49,6 +49,13 @@ public class WeatherServiceImpl implements WeatherService {
 		this.mapper.uTMP1(dto);
 		
 	}
+	
+	@Override
+	public void uWeatherValue(WeatherDTO dto) throws Exception {
+		log.debug("uWeatherValue(vo) invoked.");
+		
+		this.mapper.uWeatherValue(dto);
+	}
 
 	@Override
 	public void uREH1(WeatherDTO dto) throws Exception {

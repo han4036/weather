@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.zerock.myapp.domain.WeatherDTO;
 import org.zerock.myapp.domain.WeatherVO;
 import org.zerock.myapp.service.WeatherService;
 
@@ -103,12 +104,15 @@ public class DataController {
 		// ['00:00', 27],
 		
 		StringBuilder gridRow = new StringBuilder();
+		StringBuilder gridRow2 = new StringBuilder();
 		
 //		String jsonString = 
 //        "[{\"custNm\":\"홍길동\","+ "\"custPh\":\"010-0000-0000\","+ "\"birth\":\"2000-01-23\""+ "}]"		;
 //		  [{"custNm":"홍길동","custPh":"010-0000-0000","birth":"2000-01-23"}]
 		StringBuilder chartRow = new StringBuilder();
 		StringBuilder grid = new StringBuilder();
+		
+		JSONArray ja = new JSONArray();
 		
 		if(vo.getDataType().equals(1)) {
 			
@@ -123,30 +127,57 @@ public class DataController {
 				
 				vo = vo1;
 				
-				gridRow.append("[{\"구분\":\""+d1[0]+"\", "+colName+":\""+vo1.getT00()+"\"},")
-				  .append("{\"구분\":\""+d1[1]+"\", "+colName+":\""+vo1.getT01()+"\"},")
-				  .append("{\"구분\":\""+d1[2]+"\", "+colName+":\""+vo1.getT02()+"\"},")
-				  .append("{\"구분\":\""+d1[3]+"\", "+colName+":\""+vo1.getT03()+"\"},")
-				  .append("{\"구분\":\""+d1[4]+"\", "+colName+":\""+vo1.getT04()+"\"},")
-				  .append("{\"구분\":\""+d1[5]+"\", "+colName+":\""+vo1.getT05()+"\"},")
-				  .append("{\"구분\":\""+d1[6]+"\", "+colName+":\""+vo1.getT06()+"\"},")
-				  .append("{\"구분\":\""+d1[7]+"\", "+colName+":\""+vo1.getT07()+"\"},")
-				  .append("{\"구분\":\""+d1[8]+"\", "+colName+":\""+vo1.getT08()+"\"},")
-				  .append("{\"구분\":\""+d1[9]+"\", "+colName+":\""+vo1.getT09()+"\"},")
-				  .append("{\"구분\":\""+d1[10]+"\", "+colName+":\""+vo1.getT10()+"\"},")
-				  .append("{\"구분\":\""+d1[11]+"\", "+colName+":\""+vo1.getT11()+"\"},")
-				  .append("{\"구분\":\""+d1[12]+"\", "+colName+":\""+vo1.getT12()+"\"},")
-				  .append("{\"구분\":\""+d1[13]+"\", "+colName+":\""+vo1.getT13()+"\"},")
-				  .append("{\"구분\":\""+d1[14]+"\", "+colName+":\""+vo1.getT14()+"\"},")
-				  .append("{\"구분\":\""+d1[15]+"\", "+colName+":\""+vo1.getT15()+"\"},")
-				  .append("{\"구분\":\""+d1[16]+"\", "+colName+":\""+vo1.getT16()+"\"},")
-				  .append("{\"구분\":\""+d1[17]+"\", "+colName+":\""+vo1.getT17()+"\"},")
-				  .append("{\"구분\":\""+d1[18]+"\", "+colName+":\""+vo1.getT18()+"\"},")
-				  .append("{\"구분\":\""+d1[19]+"\", "+colName+":\""+vo1.getT19()+"\"},")
-				  .append("{\"구분\":\""+d1[20]+"\", "+colName+":\""+vo1.getT20()+"\"},")
-				  .append("{\"구분\":\""+d1[21]+"\", "+colName+":\""+vo1.getT21()+"\"},")
-				  .append("{\"구분\":\""+d1[22]+"\", "+colName+":\""+vo1.getT22()+"\"},")
-				  .append("{\"구분\":\""+d1[23]+"\", "+colName+":\""+vo1.getT23()+"\"}]");
+				
+				
+				gridRow2.append("[{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[0]+"\", "+colName+":\""+vo1.getT00()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[1]+"\", "+colName+":\""+vo1.getT01()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[2]+"\", "+colName+":\""+vo1.getT02()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[3]+"\", "+colName+":\""+vo1.getT03()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[4]+"\", "+colName+":\""+vo1.getT04()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[5]+"\", "+colName+":\""+vo1.getT05()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[6]+"\", "+colName+":\""+vo1.getT06()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[7]+"\", "+colName+":\""+vo1.getT07()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[8]+"\", "+colName+":\""+vo1.getT08()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[9]+"\", "+colName+":\""+vo1.getT09()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[10]+"\", "+colName+":\""+vo1.getT10()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[11]+"\", "+colName+":\""+vo1.getT11()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[12]+"\", "+colName+":\""+vo1.getT12()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[13]+"\", "+colName+":\""+vo1.getT13()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[14]+"\", "+colName+":\""+vo1.getT14()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[15]+"\", "+colName+":\""+vo1.getT15()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[16]+"\", "+colName+":\""+vo1.getT16()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[17]+"\", "+colName+":\""+vo1.getT17()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[18]+"\", "+colName+":\""+vo1.getT18()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[19]+"\", "+colName+":\""+vo1.getT19()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[20]+"\", "+colName+":\""+vo1.getT20()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[21]+"\", "+colName+":\""+vo1.getT21()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[22]+"\", "+colName+":\""+vo1.getT22()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[23]+"\", "+colName+":\""+vo1.getT23()+"\"}]");
+				
+//				gridRow.append("[{\"구분\":\""+d1[0]+"\", "+colName+":\""+vo1.getT00()+"\"},")
+//				  .append("{\"구분\":\""+d1[1]+"\", "+colName+":\""+vo1.getT01()+"\"},")
+//				  .append("{\"구분\":\""+d1[2]+"\", "+colName+":\""+vo1.getT02()+"\"},")
+//				  .append("{\"구분\":\""+d1[3]+"\", "+colName+":\""+vo1.getT03()+"\"},")
+//				  .append("{\"구분\":\""+d1[4]+"\", "+colName+":\""+vo1.getT04()+"\"},")
+//				  .append("{\"구분\":\""+d1[5]+"\", "+colName+":\""+vo1.getT05()+"\"},")
+//				  .append("{\"구분\":\""+d1[6]+"\", "+colName+":\""+vo1.getT06()+"\"},")
+//				  .append("{\"구분\":\""+d1[7]+"\", "+colName+":\""+vo1.getT07()+"\"},")
+//				  .append("{\"구분\":\""+d1[8]+"\", "+colName+":\""+vo1.getT08()+"\"},")
+//				  .append("{\"구분\":\""+d1[9]+"\", "+colName+":\""+vo1.getT09()+"\"},")
+//				  .append("{\"구분\":\""+d1[10]+"\", "+colName+":\""+vo1.getT10()+"\"},")
+//				  .append("{\"구분\":\""+d1[11]+"\", "+colName+":\""+vo1.getT11()+"\"},")
+//				  .append("{\"구분\":\""+d1[12]+"\", "+colName+":\""+vo1.getT12()+"\"},")
+//				  .append("{\"구분\":\""+d1[13]+"\", "+colName+":\""+vo1.getT13()+"\"},")
+//				  .append("{\"구분\":\""+d1[14]+"\", "+colName+":\""+vo1.getT14()+"\"},")
+//				  .append("{\"구분\":\""+d1[15]+"\", "+colName+":\""+vo1.getT15()+"\"},")
+//				  .append("{\"구분\":\""+d1[16]+"\", "+colName+":\""+vo1.getT16()+"\"},")
+//				  .append("{\"구분\":\""+d1[17]+"\", "+colName+":\""+vo1.getT17()+"\"},")
+//				  .append("{\"구분\":\""+d1[18]+"\", "+colName+":\""+vo1.getT18()+"\"},")
+//				  .append("{\"구분\":\""+d1[19]+"\", "+colName+":\""+vo1.getT19()+"\"},")
+//				  .append("{\"구분\":\""+d1[20]+"\", "+colName+":\""+vo1.getT20()+"\"},")
+//				  .append("{\"구분\":\""+d1[21]+"\", "+colName+":\""+vo1.getT21()+"\"},")
+//				  .append("{\"구분\":\""+d1[22]+"\", "+colName+":\""+vo1.getT22()+"\"},")
+//				  .append("{\"구분\":\""+d1[23]+"\", "+colName+":\""+vo1.getT23()+"\"}]");
 				
 				
 				chartRow.append("['"+d1[0]+"', " + vo1.getT00()+"],")
@@ -187,30 +218,30 @@ public class DataController {
 				
 				vo = vo1;
 				
-				gridRow.append("[{\"구분\":\""+d1[0]+"\", "+colName+":\""+vo1.getT00()+"\"},")
-				  .append("{\"구분\":\""+d1[1]+"\", "+colName+":\""+vo1.getT01()+"\"},")
-				  .append("{\"구분\":\""+d1[2]+"\", "+colName+":\""+vo1.getT02()+"\"},")
-				  .append("{\"구분\":\""+d1[3]+"\", "+colName+":\""+vo1.getT03()+"\"},")
-				  .append("{\"구분\":\""+d1[4]+"\", "+colName+":\""+vo1.getT04()+"\"},")
-				  .append("{\"구분\":\""+d1[5]+"\", "+colName+":\""+vo1.getT05()+"\"},")
-				  .append("{\"구분\":\""+d1[6]+"\", "+colName+":\""+vo1.getT06()+"\"},")
-				  .append("{\"구분\":\""+d1[7]+"\", "+colName+":\""+vo1.getT07()+"\"},")
-				  .append("{\"구분\":\""+d1[8]+"\", "+colName+":\""+vo1.getT08()+"\"},")
-				  .append("{\"구분\":\""+d1[9]+"\", "+colName+":\""+vo1.getT09()+"\"},")
-				  .append("{\"구분\":\""+d1[10]+"\", "+colName+":\""+vo1.getT10()+"\"},")
-				  .append("{\"구분\":\""+d1[11]+"\", "+colName+":\""+vo1.getT11()+"\"},")
-				  .append("{\"구분\":\""+d1[12]+"\", "+colName+":\""+vo1.getT12()+"\"},")
-				  .append("{\"구분\":\""+d1[13]+"\", "+colName+":\""+vo1.getT13()+"\"},")
-				  .append("{\"구분\":\""+d1[14]+"\", "+colName+":\""+vo1.getT14()+"\"},")
-				  .append("{\"구분\":\""+d1[15]+"\", "+colName+":\""+vo1.getT15()+"\"},")
-				  .append("{\"구분\":\""+d1[16]+"\", "+colName+":\""+vo1.getT16()+"\"},")
-				  .append("{\"구분\":\""+d1[17]+"\", "+colName+":\""+vo1.getT17()+"\"},")
-				  .append("{\"구분\":\""+d1[18]+"\", "+colName+":\""+vo1.getT18()+"\"},")
-				  .append("{\"구분\":\""+d1[19]+"\", "+colName+":\""+vo1.getT19()+"\"},")
-				  .append("{\"구분\":\""+d1[20]+"\", "+colName+":\""+vo1.getT20()+"\"},")
-				  .append("{\"구분\":\""+d1[21]+"\", "+colName+":\""+vo1.getT21()+"\"},")
-				  .append("{\"구분\":\""+d1[22]+"\", "+colName+":\""+vo1.getT22()+"\"},")
-				  .append("{\"구분\":\""+d1[23]+"\", "+colName+":\""+vo1.getT23()+"\"}]");
+				gridRow2.append("[{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[0]+"\", "+colName+":\""+vo1.getT00()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[1]+"\", "+colName+":\""+vo1.getT01()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[2]+"\", "+colName+":\""+vo1.getT02()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[3]+"\", "+colName+":\""+vo1.getT03()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[4]+"\", "+colName+":\""+vo1.getT04()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[5]+"\", "+colName+":\""+vo1.getT05()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[6]+"\", "+colName+":\""+vo1.getT06()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[7]+"\", "+colName+":\""+vo1.getT07()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[8]+"\", "+colName+":\""+vo1.getT08()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[9]+"\", "+colName+":\""+vo1.getT09()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[10]+"\", "+colName+":\""+vo1.getT10()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[11]+"\", "+colName+":\""+vo1.getT11()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[12]+"\", "+colName+":\""+vo1.getT12()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[13]+"\", "+colName+":\""+vo1.getT13()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[14]+"\", "+colName+":\""+vo1.getT14()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[15]+"\", "+colName+":\""+vo1.getT15()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[16]+"\", "+colName+":\""+vo1.getT16()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[17]+"\", "+colName+":\""+vo1.getT17()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[18]+"\", "+colName+":\""+vo1.getT18()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[19]+"\", "+colName+":\""+vo1.getT19()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[20]+"\", "+colName+":\""+vo1.getT20()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[21]+"\", "+colName+":\""+vo1.getT21()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[22]+"\", "+colName+":\""+vo1.getT22()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[23]+"\", "+colName+":\""+vo1.getT23()+"\"}]");
 				
 			
 				chartRow.append("['"+d1[0]+"', " + vo1.getT00()+"],")
@@ -241,7 +272,14 @@ public class DataController {
 		
 		}
 		
-		JSONArray ja = (JSONArray)jp.parse(gridRow.toString());
+		System.out.println("DDDDDDd : " + ja);
+		
+		System.out.println("gridRow2 : " + gridRow2);
+		ja = (JSONArray)jp.parse(gridRow2.toString());
+		
+		System.out.println("ja : " + ja);
+		
+//		ja = (JSONArray)jp.parse(gridRow.toString());
 		
 		System.out.println("\n\t >>>>>>>>>>>>>>> vo : " + ja);
 		
@@ -262,21 +300,238 @@ public class DataController {
 		
 	} // chart
 	
-	@GetMapping("/chart4")
+	@PostMapping("/chart4")
 	@ResponseBody
-	public String chart4(String category, Model model) throws Exception {
+	public String chart4(@RequestParam(value="id")Integer id, @RequestParam(value="cellName")String cellName,
+			@RequestParam(value="cellValue")Integer cellValue, @RequestParam(value="date") String dayInfo, WeatherDTO dto) throws Exception {
 		log.debug("chart4() invoked.");
 		
-		String hi = "";
+		log.debug(">>>>>>id : "+id);
+		log.debug(">>>>>>cellname : " + cellName);
+		log.debug(">>>>>>cellValue : "+cellValue);
+		log.debug("dayInfo : "+dayInfo);
+		String t = "";
+		Integer value = null;
+		Integer dataType = null;
+		StringBuilder day = new StringBuilder();
 		
-		if(category.equals("온도")) {
-			hi = "Hi!!!!!";
-		} else {
-			hi = "fail...!";
+		
+		
+		if("온도".equals(cellName)) {
+			dataType = 1;
+			switch(id) {
+			case 1:
+				t = "T00";
+				value = cellValue;
+				break;
+			case 2:
+				t = "T01";
+				value = cellValue;
+				break;
+			case 3:
+				t = "T02";
+				value = cellValue;
+				break;
+			case 4:
+				t = "T03";
+				value = cellValue;
+				break;
+			case 5:
+				t = "T04";
+				value = cellValue;
+				break;
+			case 6:
+				t = "T05";
+				value = cellValue;
+				break;
+			case 7:
+				t = "T06";
+				value = cellValue;
+				break;
+			case 8:
+				t = "T07";
+				value = cellValue;
+				break;
+			case 9:
+				t = "T08";
+				value = cellValue;
+				break;
+			case 10:
+				t = "T09";
+				value = cellValue;
+				break;
+			case 11:
+				t = "T10";
+				value = cellValue;
+				break;
+			case 12:
+				t = "T11";
+				value = cellValue;
+				break;
+			case 13:
+				t = "T12";
+				value = cellValue;
+				break;
+			case 14:
+				t = "T13";
+				value = cellValue;
+				break;
+			case 15:
+				t = "T14";
+				value = cellValue;
+				break;
+			case 16:
+				t = "T15";
+				value = cellValue;
+				break;
+			case 17:
+				t = "T16";
+				value = cellValue;
+				break;
+			case 18:
+				t = "T17";
+				value = cellValue;
+				break;
+			case 19:
+				t = "T18";
+				value = cellValue;
+				break;
+			case 20:
+				t = "T19";
+				value = cellValue;
+				break;
+			case 21:
+				t = "T20";
+				value = cellValue;
+				break;
+			case 22:
+				t = "T21";
+				value = cellValue;
+				break;
+			case 23:
+				t = "T22";
+				value = cellValue;
+				break;
+			case 24:
+				t = "T23";
+				value = cellValue;
+				break;
+			}
 		}
 		
-		return hi;
+		if("습도".equals(cellName)) {
+			dataType = 2;
+			switch(id) {
+			case 1:
+				t = "T00";
+				value = cellValue;
+				break;
+			case 2:
+				t = "T01";
+				value = cellValue;
+				break;
+			case 3:
+				t = "T02";
+				value = cellValue;
+				break;
+			case 4:
+				t = "T03";
+				value = cellValue;
+				break;
+			case 5:
+				t = "T04";
+				value = cellValue;
+				break;
+			case 6:
+				t = "T05";
+				value = cellValue;
+				break;
+			case 7:
+				t = "T06";
+				value = cellValue;
+				break;
+			case 8:
+				t = "T07";
+				value = cellValue;
+				break;
+			case 9:
+				t = "T08";
+				value = cellValue;
+				break;
+			case 10:
+				t = "T09";
+				value = cellValue;
+				break;
+			case 11:
+				t = "T10";
+				value = cellValue;
+				break;
+			case 12:
+				t = "T11";
+				value = cellValue;
+				break;
+			case 13:
+				t = "T12";
+				value = cellValue;
+				break;
+			case 14:
+				t = "T13";
+				value = cellValue;
+				break;
+			case 15:
+				t = "T14";
+				value = cellValue;
+				break;
+			case 16:
+				t = "T15";
+				value = cellValue;
+				break;
+			case 17:
+				t = "T16";
+				value = cellValue;
+				break;
+			case 18:
+				t = "T17";
+				value = cellValue;
+				break;
+			case 19:
+				t = "T18";
+				value = cellValue;
+				break;
+			case 20:
+				t = "T19";
+				value = cellValue;
+				break;
+			case 21:
+				t = "T20";
+				value = cellValue;
+				break;
+			case 22:
+				t = "T21";
+				value = cellValue;
+				break;
+			case 23:
+				t = "T22";
+				value = cellValue;
+				break;
+			case 24:
+				t = "T23";
+				value = cellValue;
+				break;
+			}
+		}
 		
+		day.append(dayInfo.substring(0, 4)).append(dayInfo.substring(5, 7)).append(dayInfo.substring(8));
+		
+		dto.setT(t);
+		dto.setDataType(dataType);
+		dto.setValue(value);
+		dto.setInputdatetime(day.toString());
+		
+		this.service2.uWeatherValue(dto);
+		
+		
+		return "success";
 	} // chart
 	
 	@PostMapping("/chart3")
@@ -348,10 +603,9 @@ public class DataController {
 		} // for
 		
 		String colName ="";
+		String colModel ="";
+		Integer sid;
 		
-		
-//		 var gridData = [{'구분':"00:00",'온도':"27"}];
-		// ['00:00', 27],
 		
 		StringBuilder gridRow = new StringBuilder();
 		
@@ -363,7 +617,9 @@ public class DataController {
 		
 		if(vo.getDataType().equals(1)) {
 			
+//			colName = "[\"구분\",\"온도\"]";
 			colName = "\"온도\"";
+//			colModel = "\"온도\"";
 			
 			System.out.println(colName);
 			chartRow.append("['시간', '온도'],");
@@ -374,30 +630,32 @@ public class DataController {
 				
 				vo = vo1;
 				
-				gridRow.append("[{\"구분\":\""+d1[0]+"\", "+colName+":\""+vo1.getT00()+"\"},")
-				  .append("{\"구분\":\""+d1[1]+"\", "+colName+":\""+vo1.getT01()+"\"},")
-				  .append("{\"구분\":\""+d1[2]+"\", "+colName+":\""+vo1.getT02()+"\"},")
-				  .append("{\"구분\":\""+d1[3]+"\", "+colName+":\""+vo1.getT03()+"\"},")
-				  .append("{\"구분\":\""+d1[4]+"\", "+colName+":\""+vo1.getT04()+"\"},")
-				  .append("{\"구분\":\""+d1[5]+"\", "+colName+":\""+vo1.getT05()+"\"},")
-				  .append("{\"구분\":\""+d1[6]+"\", "+colName+":\""+vo1.getT06()+"\"},")
-				  .append("{\"구분\":\""+d1[7]+"\", "+colName+":\""+vo1.getT07()+"\"},")
-				  .append("{\"구분\":\""+d1[8]+"\", "+colName+":\""+vo1.getT08()+"\"},")
-				  .append("{\"구분\":\""+d1[9]+"\", "+colName+":\""+vo1.getT09()+"\"},")
-				  .append("{\"구분\":\""+d1[10]+"\", "+colName+":\""+vo1.getT10()+"\"},")
-				  .append("{\"구분\":\""+d1[11]+"\", "+colName+":\""+vo1.getT11()+"\"},")
-				  .append("{\"구분\":\""+d1[12]+"\", "+colName+":\""+vo1.getT12()+"\"},")
-				  .append("{\"구분\":\""+d1[13]+"\", "+colName+":\""+vo1.getT13()+"\"},")
-				  .append("{\"구분\":\""+d1[14]+"\", "+colName+":\""+vo1.getT14()+"\"},")
-				  .append("{\"구분\":\""+d1[15]+"\", "+colName+":\""+vo1.getT15()+"\"},")
-				  .append("{\"구분\":\""+d1[16]+"\", "+colName+":\""+vo1.getT16()+"\"},")
-				  .append("{\"구분\":\""+d1[17]+"\", "+colName+":\""+vo1.getT17()+"\"},")
-				  .append("{\"구분\":\""+d1[18]+"\", "+colName+":\""+vo1.getT18()+"\"},")
-				  .append("{\"구분\":\""+d1[19]+"\", "+colName+":\""+vo1.getT19()+"\"},")
-				  .append("{\"구분\":\""+d1[20]+"\", "+colName+":\""+vo1.getT20()+"\"},")
-				  .append("{\"구분\":\""+d1[21]+"\", "+colName+":\""+vo1.getT21()+"\"},")
-				  .append("{\"구분\":\""+d1[22]+"\", "+colName+":\""+vo1.getT22()+"\"},")
-				  .append("{\"구분\":\""+d1[23]+"\", "+colName+":\""+vo1.getT23()+"\"}]");
+				sid = vo1.getSid();
+				
+				gridRow.append("[{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[0]+"\", "+colName+":\""+vo1.getT00()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[1]+"\", "+colName+":\""+vo1.getT01()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[2]+"\", "+colName+":\""+vo1.getT02()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[3]+"\", "+colName+":\""+vo1.getT03()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[4]+"\", "+colName+":\""+vo1.getT04()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[5]+"\", "+colName+":\""+vo1.getT05()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[6]+"\", "+colName+":\""+vo1.getT06()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[7]+"\", "+colName+":\""+vo1.getT07()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[8]+"\", "+colName+":\""+vo1.getT08()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[9]+"\", "+colName+":\""+vo1.getT09()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[10]+"\", "+colName+":\""+vo1.getT10()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[11]+"\", "+colName+":\""+vo1.getT11()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[12]+"\", "+colName+":\""+vo1.getT12()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[13]+"\", "+colName+":\""+vo1.getT13()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[14]+"\", "+colName+":\""+vo1.getT14()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[15]+"\", "+colName+":\""+vo1.getT15()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[16]+"\", "+colName+":\""+vo1.getT16()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[17]+"\", "+colName+":\""+vo1.getT17()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[18]+"\", "+colName+":\""+vo1.getT18()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[19]+"\", "+colName+":\""+vo1.getT19()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[20]+"\", "+colName+":\""+vo1.getT20()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[21]+"\", "+colName+":\""+vo1.getT21()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[22]+"\", "+colName+":\""+vo1.getT22()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[23]+"\", "+colName+":\""+vo1.getT23()+"\"}]");
 				
 				
 				chartRow.append("['"+d1[0]+"', " + vo1.getT00()+"],")
@@ -428,40 +686,44 @@ public class DataController {
 				System.out.println(chartRow);
 			}
 		
-		} else {
+		} else if(vo.getDataType().equals(2)){
 			
 			chartRow.append("['시간', '습도'],");
 			
 			for(WeatherVO vo1 : li) {
 				
+//				colName = "[\"구분\",\"습도\"]";
 				colName = "\"습도\"";
+//				colModel = "\"습도\"";
 				
 				vo = vo1;
 				
-				gridRow.append("[{\"구분\":\""+d1[0]+"\", "+colName+":\""+vo1.getT00()+"\"},")
-				  .append("{\"구분\":\""+d1[1]+"\", "+colName+":\""+vo1.getT01()+"\"},")
-				  .append("{\"구분\":\""+d1[2]+"\", "+colName+":\""+vo1.getT02()+"\"},")
-				  .append("{\"구분\":\""+d1[3]+"\", "+colName+":\""+vo1.getT03()+"\"},")
-				  .append("{\"구분\":\""+d1[4]+"\", "+colName+":\""+vo1.getT04()+"\"},")
-				  .append("{\"구분\":\""+d1[5]+"\", "+colName+":\""+vo1.getT05()+"\"},")
-				  .append("{\"구분\":\""+d1[6]+"\", "+colName+":\""+vo1.getT06()+"\"},")
-				  .append("{\"구분\":\""+d1[7]+"\", "+colName+":\""+vo1.getT07()+"\"},")
-				  .append("{\"구분\":\""+d1[8]+"\", "+colName+":\""+vo1.getT08()+"\"},")
-				  .append("{\"구분\":\""+d1[9]+"\", "+colName+":\""+vo1.getT09()+"\"},")
-				  .append("{\"구분\":\""+d1[10]+"\", "+colName+":\""+vo1.getT10()+"\"},")
-				  .append("{\"구분\":\""+d1[11]+"\", "+colName+":\""+vo1.getT11()+"\"},")
-				  .append("{\"구분\":\""+d1[12]+"\", "+colName+":\""+vo1.getT12()+"\"},")
-				  .append("{\"구분\":\""+d1[13]+"\", "+colName+":\""+vo1.getT13()+"\"},")
-				  .append("{\"구분\":\""+d1[14]+"\", "+colName+":\""+vo1.getT14()+"\"},")
-				  .append("{\"구분\":\""+d1[15]+"\", "+colName+":\""+vo1.getT15()+"\"},")
-				  .append("{\"구분\":\""+d1[16]+"\", "+colName+":\""+vo1.getT16()+"\"},")
-				  .append("{\"구분\":\""+d1[17]+"\", "+colName+":\""+vo1.getT17()+"\"},")
-				  .append("{\"구분\":\""+d1[18]+"\", "+colName+":\""+vo1.getT18()+"\"},")
-				  .append("{\"구분\":\""+d1[19]+"\", "+colName+":\""+vo1.getT19()+"\"},")
-				  .append("{\"구분\":\""+d1[20]+"\", "+colName+":\""+vo1.getT20()+"\"},")
-				  .append("{\"구분\":\""+d1[21]+"\", "+colName+":\""+vo1.getT21()+"\"},")
-				  .append("{\"구분\":\""+d1[22]+"\", "+colName+":\""+vo1.getT22()+"\"},")
-				  .append("{\"구분\":\""+d1[23]+"\", "+colName+":\""+vo1.getT23()+"\"}]");
+				sid = vo1.getSid();
+				
+				gridRow.append("[{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[0]+"\", "+colName+":\""+vo1.getT00()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[1]+"\", "+colName+":\""+vo1.getT01()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[2]+"\", "+colName+":\""+vo1.getT02()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[3]+"\", "+colName+":\""+vo1.getT03()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[4]+"\", "+colName+":\""+vo1.getT04()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[5]+"\", "+colName+":\""+vo1.getT05()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[6]+"\", "+colName+":\""+vo1.getT06()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[7]+"\", "+colName+":\""+vo1.getT07()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[8]+"\", "+colName+":\""+vo1.getT08()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[9]+"\", "+colName+":\""+vo1.getT09()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[10]+"\", "+colName+":\""+vo1.getT10()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[11]+"\", "+colName+":\""+vo1.getT11()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[12]+"\", "+colName+":\""+vo1.getT12()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[13]+"\", "+colName+":\""+vo1.getT13()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[14]+"\", "+colName+":\""+vo1.getT14()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[15]+"\", "+colName+":\""+vo1.getT15()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[16]+"\", "+colName+":\""+vo1.getT16()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[17]+"\", "+colName+":\""+vo1.getT17()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[18]+"\", "+colName+":\""+vo1.getT18()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[19]+"\", "+colName+":\""+vo1.getT19()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[20]+"\", "+colName+":\""+vo1.getT20()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[21]+"\", "+colName+":\""+vo1.getT21()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[22]+"\", "+colName+":\""+vo1.getT22()+"\"},")
+				  .append("{\"sid\":\""+vo1.getSid()+"\", "+"\"구분\":\""+d1[23]+"\", "+colName+":\""+vo1.getT23()+"\"}]");
 				
 			
 				chartRow.append("['"+d1[0]+"', " + vo1.getT00()+"],")
@@ -507,6 +769,7 @@ public class DataController {
 		model.addAttribute("date", date);
 		model.addAttribute("cate", category);
 		model.addAttribute("colName", colName);
+		model.addAttribute("colModel", colModel);
 		
 		String de = URLEncoder.encode(jg.toString(), "UTF-8");
 		
@@ -526,6 +789,8 @@ public class DataController {
 		
 		mapResult.put("grid", jgData);
 		mapResult.put("chart", jc);
+		mapResult.put("name", colName);
+		mapResult.put("model", jc);
 		
 		
 		log.debug(">>>>>>>>>>>>"+ mapResult.toString());
