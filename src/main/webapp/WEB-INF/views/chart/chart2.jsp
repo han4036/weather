@@ -176,31 +176,10 @@
 	        }
 			
 			
-			  // 현재 그리드에 표현되어 있는 데이터만 다운로드 가능
-			$("#export_Excel").on("click", function(){
-				 $("#list").jqGrid("exportToExcel", {
-		            includeLabels: true,
-		            includeGroupHeader: true,
-		            includeFooter: true,
-		            excelstyles:['text-align'],
-		            fileName:date1+" "+cate1+ "데이터.xlsx",
-		        });
-			});
+			
 	
 		
-		// 적용X
-// 	    $("#list").jqGrid('navButtonAdd', '#list2_table_nav', 
-// 			{
-// 				caption:"Excel 출력", 
-// 				title: "Excel 출력",
-// 				id: 'pager_excel',
-// 				onClickButton:function(e){
-// 				    alert("새로만튼 버튼 클릭");
-// 				    exportExcel($("#list"), "test.xls");
-//         },buttonicon : 'ui-icon-disk'
-  
-//       });
-		
+
 	} // function gridView
 	
 	
@@ -252,6 +231,32 @@
 		
 			})
 		});
+	
+	
+		  // 현재 그리드에 표현되어 있는 데이터만 다운로드 가능
+        $("#export_Excel").on("click", function(){
+             $("#list").jqGrid("exportToExcel", {
+                includeLabels: true,
+                includeGroupHeader: true,
+                includeFooter: true,
+                excelstyles:['text-align'],
+                fileName:date1+" "+cate1+ "데이터.xlsx",
+            });
+        });
+		  
+        // 적용안됨
+//      $("#list").jqGrid('navButtonAdd', '#list2_table_nav', 
+//          {
+//              caption:"Excel 출력", 
+//              title: "Excel 출력",
+//              id: 'pager_excel',
+//              onClickButton:function(e){
+//                  alert("새로만튼 버튼 클릭");
+//                  exportExcel($("#list"), "test.xls");
+//         },buttonicon : 'ui-icon-disk'
+  
+//       });
+        
 		
 		// 날짜 변경시 일어나는 이벤트(선택한 특정 날짜에 따른 온/습도값 조회 이벤트)
 	    $("#date1").change(function(){
