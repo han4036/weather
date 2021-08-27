@@ -29,20 +29,29 @@
 
 <script type="text/javascript">
       
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
+      
 
-      var data2 = [${chartRow}];
-      var cate1 = '${cate}';
+//       var data2 = ${chartRow};
+      
+//       console.log("data2 : ddd" + data2);
+      
+      /* var data2 = [${chartRow}];
+      console.log("data2 : ddd" + data2);
+      
+      var data3 = ${llist};
+      console.log("data3 : ddd" + data3)
+      console.log("data3 : ddd" + data3[0]) */
+      
+//       var cate1 = '${cate}';
 
         
       // 구글차트 그리는 함수
-      function drawChart() {
+      /* function drawChart() {
+    	  
     	  
     	  var chart_data = google.visualization.arrayToDataTable(
               data2
           ); 
-        
         var options = {
               title: '시간별 '+cate1,
               legend: { position: 'bottom' },
@@ -60,39 +69,14 @@
                       bold: false
                   }
               }
-            };
+            }; */
         
         
         
-        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        /* var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
         chart.draw(chart_data, options);
-      }; // drawChart
-      
-// <script type="text/javascript">
-//     var gridData = ${gridRow};
-    
-//     $(function(){
-//         $("#list").jqGrid({
-//             datatype: "local",
-// //             width: 1000,
-// //             height: 608,
-//             width: 700,
-//             height: 600,
-//             colNames:['구분', ${colName}],
-//             colModel:[
-//                    {name:'구분', index:'구분', align:'center', hidden: false},
-//                    {name:${colName}, index:${colName}, align:'center', hidden:false},
-//             ],
-//             caption: ""
-//         });
-        
-        
-//         for(var i=0; i<gridData.length; i++){
-//             $("#list").jqGrid('addRowData', i+1, gridData[i]);
-//         }
-//     });
-
+      }; // drawChart */
 
  
    var formatter2 = function(cellValue, options, rowObject) {
@@ -102,16 +86,79 @@
 	   return cellValue;
    }
     
-    var cate1 = "${cate}";
-    var colNam = ['sid','구분',${colName}];
+    var cate1 = null;
+//     var colNam = ['sid','구분',${colName}];
+    var colNam = null;
+    
+    var data2 = null;
     
     $(function(){
-    	var date1 = $("#date1").val();
+    	var date1 = null;
     	console.log(date1);
     	console.log(cate1);
-    	console.log($("#date1").val());
-    	var gridData = ${gridRow};
+    	var gridData = null;
     	
+    	var today2 = new Date();
+        var yyyy = today2.getFullYear();
+        var mm = ("0"+(1+today2.getMonth())).slice(-2);
+        var dd = ("0"+today2.getDate()).slice(-2);
+        var today = yyyy+'-'+mm+'-'+dd;
+        date1 = today;
+        
+        console.log("today : " + today)
+    	
+    	$.ajax({
+            type: "post",
+            url: "/chart/chart3",
+            loadonce: false,
+            async: false,
+            data : {'date': today, 'category' : "온도"},
+            dateType: "application/json; charset:UTF-8",
+            success: function (result){
+                gridData = result.grid;
+                console.log(gridData + " dddddddddddddd")
+                colNam = ['sid', '구분', result.name];
+                cate1 = result.cate2;
+                data2 = eval("["+result.chart+"]");
+                
+            },
+            error: function (result) {
+                alert("Error!!");
+            }
+        });
+    	
+    	
+    	google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+    	
+    	function drawChart() {
+            
+            
+            var chart_data = google.visualization.arrayToDataTable(
+                data2
+            ); 
+          var options = {
+                title: '시간별 '+cate1,
+                legend: { position: 'bottom' },
+                hAxis: {
+                    title: 'Time',
+                    showTextEvery: 4,
+                    textStyle: {
+                        color: '#2B2B2B',
+                        fontSize: 15,
+                    },
+                    titleTextStyle: {
+                        color: '#2B2B2B',
+                        fontSize: 20,
+                        fontName: 'Arial',
+                        bold: false
+                    }
+                }
+              };
+          var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+          chart.draw(chart_data, options);
+        }; // drawChart
     	// 그리드 그리기
     	gridView(gridData);
     	
@@ -126,8 +173,9 @@
 		
 				url: "/chart3",
 	            datatype: "local",
-	            width: 700,
-	            height: 600,
+	            width: 'auto',
+	            height: 'auto',
+	            loadtext: '로딩중...',
 	            cellEdit: true,
 	            cellsubmit: 'remote',
 	            cellurl: '/chart/chart4',
@@ -158,11 +206,11 @@
 	            colNames: colNam,
 	            colModel:[
 	            	   {name:'sid', index:'sid', hidden:true, key:true},
-	                   {name:'구분', index:'구분', align:'center', hidden: false},
-	                   {name:cate1, index:cate1, align:'center', hidden:false, editable: true /* formatter: formatter2 */},
+	                   {name:'구분', index:'구분', align:'center', hidden: false, width:'200', height:"40"},
+	                   {name:cate1, index:cate1, align:'center', hidden:false, width:'350', height:"40", editable: true /* formatter: formatter2 */},
 	                   ],
 	            jsonReader: {
-	            	root: '${gridRow}',
+	            	root: gridData,
 	                repeatitems:false,
 	            },
 	            loadonce: false,
@@ -175,11 +223,6 @@
 	            $("#list").jqGrid('addRowData', i+1, gridData[i]);
 	        }
 			
-			
-			
-	
-		
-
 	} // function gridView
 	
 	
@@ -193,7 +236,7 @@
                 type: "post",
                 url: "/chart/chart3",
                 loadonce: false,
-                async: true,
+                async: false,
                 data : {'date': date1, 'category' : cate1},
                 dateType: "application/json; charset:UTF-8",
                 success: function(result) {
@@ -222,6 +265,9 @@
                     
                     data2 = eval("["+result.chart+"]");
                     
+                    console.log("data2 : " + data2)
+                    console.log("data2 : " + typeof data2)
+                    
                     drawChart();
                     
                 },
@@ -235,12 +281,14 @@
 	
 		  // 현재 그리드에 표현되어 있는 데이터만 다운로드 가능
         $("#export_Excel").on("click", function(){
+        	alert("현재 조회된 데이터를 Excel 파일로 다운로드 합니다.");
              $("#list").jqGrid("exportToExcel", {
                 includeLabels: true,
-                includeGroupHeader: true,
+                includeGroupHeader: false,
                 includeFooter: true,
-                excelstyles:['text-align'],
+                excelstyles:'text-align',
                 fileName:date1+" "+cate1+ "데이터.xlsx",
+                loadIndicator: true
             });
         });
 		  
@@ -266,15 +314,15 @@
 	    		type: "post",
 	    		url: "/chart/chart3",
 	    		loadonce: false,
-	    		async: true,
-	    		data : {'date': date1, 'category' : cate1},
+	    		async: false,
+	    		data : {'date': date1, 'category' : cate1},  // 날짜값, 카테고리(온/습도)값을 전송
 	    		dateType: "application/json; charset:UTF-8",
 	    	    success: function(result) {
 	    	    	
 	    	    	$("#list").jqGrid('clearGridData');
 	    	    	
 	    	    	gridData = result.grid;
-                    console.log(typeof ('['+result.chart+']'));
+                    console.log(typeof eval('['+result.chart+']'));
                     data2 = eval("["+result.chart+"]");
                     
                     drawChart();
@@ -300,35 +348,59 @@
 	    }) // date1.change
        
 	});
+    
+    $(function() {
+        console.log('${cate}');
+        $("#date1").datepicker({
+            dateFormat: 'yy-mm-dd',
+            showMonthAfterYear: true,
+            showOtherMonths: true,
+            changeMonth: false,
+            changeYear: false,
+            showOn: "both",
+            buttonImage: "../resources/Img/images1.png",
+            buttonImageOnly: true,
+            yearSuffix: "년",
+            nextText: '다음 달',
+            prevText: '이전 달',
+            dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
+            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            minDate: "-1Y",
+            maxDate: "+1Y"
+       });
+       $('#date1').datepicker('setDate', 'date1');
+    })
 	
 
     </script>
 </head>
 <body>
 	<script>
-    $(function() {
-	    console.log('${cate}');
-        $("#date1").datepicker({
-		    dateFormat: 'yy-mm-dd',
-		    showMonthAfterYear: true,
-		    showOtherMonths: true,
-	        changeMonth: false,
-	        changeYear: false,
-	        showOn: "both",
-	        buttonImage: "../resources/Img/images1.png",
-	        buttonImageOnly: true,
-	        yearSuffix: "년",
-	        nextText: '다음 달',
-	        prevText: '이전 달',
-	        dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
-	        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
-	        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-	        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-	        minDate: "-1Y",
-	        maxDate: "+1Y"
-       });
-       $('#date1').datepicker('setDate', '${date}');
-    })
+//     $(function() {
+// 	    console.log('${cate}');
+//         $("#date1").datepicker({
+// 		    dateFormat: 'yy-mm-dd',
+// 		    showMonthAfterYear: true,
+// 		    showOtherMonths: true,
+// 	        changeMonth: false,
+// 	        changeYear: false,
+// 	        showOn: "both",
+// 	        buttonImage: "../resources/Img/images1.png",
+// 	        buttonImageOnly: true,
+// 	        yearSuffix: "년",
+// 	        nextText: '다음 달',
+// 	        prevText: '이전 달',
+// 	        dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
+// 	        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+// 	        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+// 	        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+// 	        minDate: "-1Y",
+// 	        maxDate: "+1Y"
+//        });
+//        $('#date1').datepicker('setDate', today);
+//     })
     </script>
     
 	<div id=wrapper>
@@ -336,7 +408,7 @@
 		<div id="weather">
 			<form action="/chart/chart3" method="post" id="chart2">
 				<!-- 	    <form action="/chart/chart2" method="get" id="chart2"> -->
-				<input type="text" name="date" id="date1" readonly value="${date}">
+				<input type="text" name="date" id="date1" readonly value='date1'>
 
 				<select name="category" id="cate">
 					<option value="온도" id="selectTmp" selected>온도</option>

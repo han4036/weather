@@ -34,7 +34,7 @@ public class WeatherApiController {
 	@Autowired
 	WeatherService service;
 	
-	// serviceKey는 기상청에서 제공해주며 고정으로 사용되고
+	// serviceKey는 기상청에서 신청시 발급되고 신청마다 고유 키값이 발급됨
 	// 위도와 경도는 분당시 구미동으로 고정 하기위해 final static을 사용
 	final static String serviceKey = "WBnK0gPLvl2z8n%2FBujlX6vtsLZzzZGlBJYhNB6MvacORuj8GAQy5jKOh5HbgitXV6mvVB02U0xY9PyR1CYxGuw%3D%3D";
 	final static String nx = "62";
@@ -44,10 +44,11 @@ public class WeatherApiController {
 	
 	
 	static List<JSONObject> result2 = new ArrayList<>();
-//	static HashMap<>
-//	매일 5시, 23시에 실행되는 스케줄러
+	
+	
+//	기상청 API에 예보데이터를 요청하여 받아와 DB에 저장하는 Controller 클래스
+//	매일 6시간 간격으로 실행되는 스케줄러
 	@Scheduled(cron = "0 0 05,11,17,23 * * *")
-//	@Scheduled(fixedRate=15000)
 	@RequestMapping("/weather2")
 	public void restApiWeather() throws Exception {
 		
@@ -56,13 +57,13 @@ public class WeatherApiController {
 		
 		Date now = new Date();
 		
-		String date2 = "20210802";
-		String time2 = "0800";
-		String date1 = format.format(now);			// base_date
-		String time1 = format2.format(now) + "00";	// base_time
-		String type = "json";
-		String pageNo = "1";
-		String numOfRows = "1000";
+		String date2 = "20210827";
+		String time2 = "1400";
+		String date1 = format.format(now);			// 발표 날짜
+		String time1 = format2.format(now) + "00";	// 발표 시간
+		String type = "json";						// 데이터 타입
+		String pageNo = "1";						// 페이지 수
+		String numOfRows = "1000";					// 한페이지에 표시할 데이터
 		
 		WeatherDTO dto = new WeatherDTO();
 		
@@ -74,8 +75,8 @@ public class WeatherApiController {
 		urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + pageNo);
 		urlBuilder.append("&" + URLEncoder.encode("nx", "UTF-8") + "=" + URLEncoder.encode(nx, "UTF-8"));
 		urlBuilder.append("&" + URLEncoder.encode("ny", "UTF-8") + "=" + URLEncoder.encode(ny, "UTF-8"));
-		urlBuilder.append("&" + URLEncoder.encode("base_date", "UTF-8") + "=" + URLEncoder.encode(date1, "UTF-8"));
-		urlBuilder.append("&" + URLEncoder.encode("base_time", "UTF-8") + "=" + URLEncoder.encode(time1, "UTF-8"));
+		urlBuilder.append("&" + URLEncoder.encode("base_date", "UTF-8") + "=" + URLEncoder.encode(date2, "UTF-8"));
+		urlBuilder.append("&" + URLEncoder.encode("base_time", "UTF-8") + "=" + URLEncoder.encode(time2, "UTF-8"));
 		urlBuilder.append("&" + URLEncoder.encode("dataType", "UTF-8") + "=" + URLEncoder.encode(type, "UTF-8"));
 		
 		URL url = new URL(urlBuilder.toString());

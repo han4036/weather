@@ -2,7 +2,6 @@ package org.zerock.myapp.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.zerock.myapp.domain.WeatherDTO;
 import org.zerock.myapp.domain.WeatherVO;
 
