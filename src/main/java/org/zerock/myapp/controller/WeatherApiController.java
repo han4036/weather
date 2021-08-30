@@ -57,7 +57,7 @@ public class WeatherApiController {
 		
 		Date now = new Date();
 		
-		String date2 = "20210827";
+		String date2 = "20210830";
 		String time2 = "1400";
 		String date1 = format.format(now);			// 발표 날짜
 		String time1 = format2.format(now) + "00";	// 발표 시간
@@ -75,8 +75,8 @@ public class WeatherApiController {
 		urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + pageNo);
 		urlBuilder.append("&" + URLEncoder.encode("nx", "UTF-8") + "=" + URLEncoder.encode(nx, "UTF-8"));
 		urlBuilder.append("&" + URLEncoder.encode("ny", "UTF-8") + "=" + URLEncoder.encode(ny, "UTF-8"));
-		urlBuilder.append("&" + URLEncoder.encode("base_date", "UTF-8") + "=" + URLEncoder.encode(date2, "UTF-8"));
-		urlBuilder.append("&" + URLEncoder.encode("base_time", "UTF-8") + "=" + URLEncoder.encode(time2, "UTF-8"));
+		urlBuilder.append("&" + URLEncoder.encode("base_date", "UTF-8") + "=" + URLEncoder.encode(date1, "UTF-8"));
+		urlBuilder.append("&" + URLEncoder.encode("base_time", "UTF-8") + "=" + URLEncoder.encode(time1, "UTF-8"));
 		urlBuilder.append("&" + URLEncoder.encode("dataType", "UTF-8") + "=" + URLEncoder.encode(type, "UTF-8"));
 		
 		URL url = new URL(urlBuilder.toString());

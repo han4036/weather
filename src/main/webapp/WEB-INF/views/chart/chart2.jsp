@@ -171,7 +171,7 @@
 		
 			$("#list").jqGrid({
 		
-				url: "/chart3",
+				url: "/chart/chart3",
 	            datatype: "local",
 	            width: 'auto',
 	            height: 'auto',
